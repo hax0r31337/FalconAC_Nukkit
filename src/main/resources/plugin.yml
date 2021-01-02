@@ -1,0 +1,7 @@
+
+name: FalconAC
+main: me.liuli.falcon.Main
+version: "1.0"
+author: liulihaocai
+api: ["1.0.0"]
+description: A AntiCheat Plugin.

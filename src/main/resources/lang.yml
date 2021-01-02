@@ -1,0 +1,7 @@
+ALERT_PREFIX: "&6&lFalcon&bAC &8> &7"
+WARNING: "You have been flagged for using cheats.If you continue to cheat, action will be taken."
+DEBUG: "&6&lFalcon&bAC&f[&cDEBUG&f] %1 &7failed &b%2 &fvl:%3/%4"
+KICK: "%1 was kicked for cheating"
+BAN: "%1 was banned for cheating"
+KICK_REASON: "&6&lFalcon&bAC &8> &7Kicked for unfair advantage"
+BAN_REASON: "&6&lFalcon&bAC &8> &7Banned %1min for unfair advantage"
