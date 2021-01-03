@@ -7,6 +7,7 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.*;
 import me.liuli.falcon.utils.RandUtils;
 
@@ -25,6 +26,7 @@ public class FakePlayer {
     public Item chestEquip=new Item(0,0);
     public Item legEquip=new Item(0,0);
     public Item bootEquip=new Item(0,0);
+    private Position lastPos=new Position(0,0,0);
     public FakePlayer(String name, Position pos){
         Random random = new Random();
         this.entityId= RandUtils.RandInt(10000,1000000);
@@ -103,6 +105,11 @@ public class FakePlayer {
         movePlayerPacket.pitch= (float) player.pitch;
         movePlayerPacket.headYaw=0;
         movePlayerPacket.onGround=onGround;
+        if(pos.distance(new Vector3(lastPos.x,lastPos.y,lastPos.z))<7.5){
+            movePlayerPacket.mode=MovePlayerPacket.MODE_NORMAL;
+        }else{
+            movePlayerPacket.mode=MovePlayerPacket.MODE_TELEPORT;
+        }
         player.dataPacket(movePlayerPacket);
     }
     public void updateNametag(Player player,String nameTag){

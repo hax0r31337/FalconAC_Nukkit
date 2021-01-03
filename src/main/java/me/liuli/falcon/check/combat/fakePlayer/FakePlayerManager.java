@@ -1,14 +1,15 @@
 package me.liuli.falcon.check.combat.fakePlayer;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.server.DataPacketReceiveEvent;
+import cn.nukkit.inventory.transaction.data.UseItemOnEntityData;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
-import me.liuli.falcon.Main;
+import cn.nukkit.network.protocol.InventoryTransactionPacket;
 import me.liuli.falcon.cache.CheckCache;
-import me.liuli.falcon.manager.AnticheatManager;
-import me.liuli.falcon.manager.CheckType;
+import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.utils.RandUtils;
 
 import java.util.Date;
@@ -54,6 +55,19 @@ public class FakePlayerManager {
         }, 1000);
         return fakePlayer;
     }
+    public static CheckResult checkBotHurt(DataPacketReceiveEvent event, InventoryTransactionPacket packet){
+        InventoryTransactionPacket inventoryTransactionPacket=(InventoryTransactionPacket)packet;
+        long entityId = 0;
+        if (inventoryTransactionPacket.transactionType == 3) {
+            UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) inventoryTransactionPacket.transactionData;
+            entityId = useItemOnEntityData.entityRuntimeId;
+        }
+        if (entityId == CheckCache.get(event.getPlayer()).fakePlayer.getEntityId()) {
+            FakePlayerManager.botHurt(event.getPlayer());
+            return CheckResult.FAILED;
+        }
+        return CheckResult.PASSED;
+    }
     public static void playerHurt(Player player){
         CheckCache.get(player).lastHurt=new Date().getTime();
     }
@@ -65,7 +79,6 @@ public class FakePlayerManager {
             fakePlayer.health--;
             fakePlayer.updateHealth(player);
         }
-        AnticheatManager.addVL(CheckCache.get(player), CheckType.KA_BOT);
     }
     public static void updateBot(Player player){
         Location location=player.getLocation();

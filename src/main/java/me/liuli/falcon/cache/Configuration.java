@@ -8,6 +8,7 @@ import me.liuli.falcon.manager.PunishResult;
 import me.liuli.falcon.utils.OtherUtils;
 
 import java.io.File;
+import java.util.Map;
 
 public class Configuration {
     public enum LANG {
@@ -63,30 +64,30 @@ public class Configuration {
         punishBoardcast=configJSON.getBoolean("punish-boardcast");
 
         //load checks
-        CheckCategory.COMBAT.vl=checksJSON.getJSONObject("combat").getInteger("vl");
-        CheckCategory.COMBAT.minusVl=checksJSON.getJSONObject("combat").getInteger("vl-minus");
-        CheckCategory.COMBAT.warnVl=checksJSON.getJSONObject("combat").getInteger("warn");
-        CheckCategory.COMBAT.result= PunishResult.valueOf(checksJSON.getJSONObject("combat").getString("result"));
-        CheckCategory.MOVEMENT.vl=checksJSON.getJSONObject("movement").getInteger("vl");
-        CheckCategory.MOVEMENT.minusVl=checksJSON.getJSONObject("movement").getInteger("vl-minus");
-        CheckCategory.MOVEMENT.warnVl=checksJSON.getJSONObject("movement").getInteger("warn");
-        CheckCategory.MOVEMENT.result=PunishResult.valueOf(checksJSON.getJSONObject("movement").getString("result"));
-        CheckCategory.WORLD.vl=checksJSON.getJSONObject("world").getInteger("vl");
-        CheckCategory.WORLD.minusVl=checksJSON.getJSONObject("world").getInteger("vl-minus");
-        CheckCategory.WORLD.warnVl=checksJSON.getJSONObject("world").getInteger("warn");
-        CheckCategory.WORLD.result=PunishResult.valueOf(checksJSON.getJSONObject("world").getString("result"));
-        CheckCategory.MISC.vl=checksJSON.getJSONObject("misc").getInteger("vl");
-        CheckCategory.MISC.minusVl=checksJSON.getJSONObject("misc").getInteger("vl-minus");
-        CheckCategory.MISC.warnVl=checksJSON.getJSONObject("misc").getInteger("warn");
-        CheckCategory.MISC.result=PunishResult.valueOf(checksJSON.getJSONObject("misc").getString("result"));
+        loadCategory(CheckCategory.COMBAT,checksJSON.getJSONObject("combat"));
+        loadCategory(CheckCategory.MOVEMENT,checksJSON.getJSONObject("movement"));
+        loadCategory(CheckCategory.WORLD,checksJSON.getJSONObject("world"));
+        loadCategory(CheckCategory.MISC,checksJSON.getJSONObject("misc"));
 
         //load modules
-        CheckType.KA.enable=moduleJSON.getJSONObject("killaura").getBoolean("enable");
-        CheckType.KA.addVl=moduleJSON.getJSONObject("killaura").getInteger("vl");
-        CheckType.KA.otherData.put("range_c",moduleJSON.getJSONObject("killaura").getFloat("range_c"));
-        CheckType.KA.otherData.put("range_v",moduleJSON.getJSONObject("killaura").getFloat("range_v"));
-        CheckType.KA.otherData.put("angle",moduleJSON.getJSONObject("killaura").getInteger("angle"));
-        CheckType.KA_BOT.enable=moduleJSON.getJSONObject("killaura_bot").getBoolean("enable");
-        CheckType.KA_BOT.addVl=moduleJSON.getJSONObject("killaura_bot").getInteger("vl");
+        loadType(CheckType.KILLAURA,moduleJSON.getJSONObject("killaura"));
+        loadType(CheckType.KA_BOT,moduleJSON.getJSONObject("killaura_bot"));
+        loadType(CheckType.KA_NOSWING,moduleJSON.getJSONObject("killaura_noswing"));
+        loadType(CheckType.CRITICALS,moduleJSON.getJSONObject("criticals"));
+        loadType(CheckType.ILLEGAL_INTERACT,moduleJSON.getJSONObject("illegalinteract"));
+    }
+    private static void loadCategory(CheckCategory category,JSONObject data){
+        category.vl=data.getInteger("vl");
+        category.minusVl=data.getInteger("vl-minus");
+        category.flagVl=data.getInteger("flag");
+        category.warnVl=data.getInteger("warn");
+        category.result=PunishResult.valueOf(data.getString("result"));
+    }
+    private static void loadType(CheckType checkType,JSONObject data){
+        checkType.enable= (boolean) data.remove("enable");
+        checkType.addVl= (int) data.remove("vl");
+        for(Map.Entry<String, Object> entry:data.entrySet()){
+            checkType.otherData.put(entry.getKey(),entry.getValue());
+        }
     }
 }

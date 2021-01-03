@@ -3,6 +3,8 @@ package me.liuli.falcon;
 import cn.nukkit.plugin.PluginBase;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.listener.*;
+import me.liuli.falcon.manager.BanManager;
+import me.liuli.falcon.manager.FalconCommand;
 import me.liuli.falcon.manager.MinusVL;
 import me.liuli.falcon.utils.OtherUtils;
 
@@ -18,8 +20,8 @@ public class Main extends PluginBase {
         plugin=this;
 
         //load libs
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
+        if (!new File(Main.plugin.getDataFolder().getPath()+"/data").exists()) {
+            new File(Main.plugin.getDataFolder().getPath()+"/data").mkdirs();
         }
         if (!new File(Main.plugin.getDataFolder().getPath()+"/fastjson.jar").exists()) {
             OtherUtils.readJar("fastjson.jar",Main.jarDir,Main.plugin.getDataFolder().getPath()+"/fastjson.jar");
@@ -28,6 +30,7 @@ public class Main extends PluginBase {
 
         //load config
         Configuration.loadConfig();
+        BanManager.loadBanData();
 
         //start threads
         minusVLThread=new Thread(new MinusVL());
@@ -38,6 +41,9 @@ public class Main extends PluginBase {
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new PacketListener(), this);
+
+        //register command
+        plugin.getServer().getCommandMap().register("falcon",new FalconCommand(plugin.getDescription().getVersion()));
 
         //done
         plugin.getLogger().info("§l§6Falcon§bAC §rLOADED!");

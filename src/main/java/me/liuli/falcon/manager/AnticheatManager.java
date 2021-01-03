@@ -5,14 +5,16 @@ import cn.nukkit.Server;
 import me.liuli.falcon.Main;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
+import me.liuli.falcon.utils.OtherUtils;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
 public class AnticheatManager {
-    public static void addVL(CheckCache cache, CheckType checkType){
+    public static boolean addVL(CheckCache cache, CheckType checkType){
         int nowVL=-1,maxVL=-1;
+        boolean shouldFlag=false;
         switch (checkType.category){
             case COMBAT:{
                 cache.CombatVL+=checkType.addVl;
@@ -21,6 +23,9 @@ public class AnticheatManager {
                 }
                 if(cache.CombatVL>CheckCategory.COMBAT.vl){
                     punishPlayer(cache,checkType.category);
+                }
+                if(cache.CombatVL>CheckCategory.COMBAT.flagVl){
+                    shouldFlag=true;
                 }
                 nowVL=cache.CombatVL;
                 maxVL=CheckCategory.COMBAT.vl;
@@ -34,6 +39,9 @@ public class AnticheatManager {
                 if(cache.MovementVL>CheckCategory.MOVEMENT.vl){
                     punishPlayer(cache,checkType.category);
                 }
+                if(cache.MovementVL>CheckCategory.MOVEMENT.flagVl){
+                    shouldFlag=true;
+                }
                 nowVL=cache.MovementVL;
                 maxVL=CheckCategory.MOVEMENT.vl;
                 break;
@@ -45,6 +53,9 @@ public class AnticheatManager {
                 }
                 if(cache.WorldVL>CheckCategory.WORLD.vl){
                     punishPlayer(cache,checkType.category);
+                }
+                if(cache.WorldVL>CheckCategory.WORLD.flagVl){
+                    shouldFlag=true;
                 }
                 nowVL=cache.WorldVL;
                 maxVL=CheckCategory.WORLD.vl;
@@ -58,17 +69,21 @@ public class AnticheatManager {
                 if(cache.MiscVL>CheckCategory.MISC.vl){
                     punishPlayer(cache,checkType.category);
                 }
+                if(cache.MiscVL>CheckCategory.MISC.flagVl){
+                    shouldFlag=true;
+                }
                 nowVL=cache.MiscVL;
                 maxVL=CheckCategory.MISC.vl;
                 break;
             }
         }
         if(Configuration.playerDebug){
-            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL)}));
+            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name()+"."+checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL)}));
         }
         if(Configuration.consoleDebug){
-            Main.plugin.getLogger().info(cache.player.getName()+" §7failed §b"+checkType.name()+" §fvl:"+nowVL+"/"+maxVL);
+            Main.plugin.getLogger().info(cache.player.getName()+" §7failed §b"+checkType.category.name()+"."+checkType.name()+" §fvl:"+nowVL+"/"+maxVL);
         }
+        return shouldFlag;
     }
     public static void warnPlayer(CheckCache cache){
         if(!cache.warn) {
@@ -95,21 +110,15 @@ public class AnticheatManager {
                 if(Configuration.punishBoardcast){
                     boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
                 }
-                Date date=null;
-                String reason;
-                if(Configuration.ban!=-1) {
-                    date = new Date();
-                    date.setTime(date.getTime() + ((long) Configuration.ban * 60 * 1000));
-                    reason=Configuration.ban+"";
-                }else{
-                    reason="FOREVER";
-                }
-                cache.player.kick(Configuration.LANG.BAN_REASON.proc(new String[]{reason}),false);
-                Main.plugin.getServer().getNameBans().addBan(cache.player.getName(), Configuration.LANG.BAN_REASON.proc(new String[]{reason}), date, "FalconAC");
+                BanManager.addBan(cache.player,OtherUtils.getTime()+(Configuration.ban* 60L));
             }
         }
     }
     public static boolean canCheckPlayer(Player player,CheckType checkType){
-        return checkType.enable;
+        boolean isOp=true;
+        if(player.isOp()&&!Configuration.checkOp){
+            isOp=false;
+        }
+        return checkType.enable&&isOp;
     }
 }
