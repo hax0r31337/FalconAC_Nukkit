@@ -14,8 +14,6 @@ import me.liuli.falcon.manager.AnticheatManager;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 
-import java.util.TimerTask;
-
 public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
@@ -35,15 +33,17 @@ public class EntityListener implements Listener {
             if(AnticheatManager.canCheckPlayer(player,CheckType.KILLAURA)){
                 CheckResult checkResult=KillauraCheck.checkAngle(player,event);
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA);
+                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA,checkResult);
                 }
                 checkResult=KillauraCheck.checkReach(player,event.getEntity());
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA);
+                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA,checkResult);
                 }
-                checkResult= CriticalsCheck.doDamageEvent(event);
+            }
+            if(AnticheatManager.canCheckPlayer(player,CheckType.CRITICALS)){
+                CheckResult checkResult=CriticalsCheck.doDamageEvent(event);
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.CRITICALS);
+                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.CRITICALS,checkResult);
                 }
             }
             if(AnticheatManager.canCheckPlayer(player,CheckType.KA_NOSWING)){

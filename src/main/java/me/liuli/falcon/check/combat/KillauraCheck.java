@@ -26,17 +26,17 @@ public class KillauraCheck {
             public void run() {
                 CheckResult checkResult=KillauraCheck.checkSwing(player);
                 if(checkResult.failed()){
-                    AnticheatManager.addVL(CheckCache.get(player), CheckType.KA_NOSWING);
+                    AnticheatManager.addVL(CheckCache.get(player), CheckType.KA_NOSWING,checkResult);
                 }
             }
         }, CheckType.KA_NOSWING.otherData.getInteger("swing")/2);
     }
     private static CheckResult checkSwing(Player player) {
         if(swingDataMap.get(player.getUniqueId())==null)
-            return CheckResult.FAILED;
+            return new CheckResult("Attack a entity without swing");
         long lastSwingTime=swingDataMap.remove(player.getUniqueId());
         if((new Date().getTime()-lastSwingTime)>CheckType.KA_NOSWING.otherData.getInteger("swing")){
-            return CheckResult.FAILED;
+            return new CheckResult("Attack a entity without swing");
         }
         return CheckResult.PASSED;
     }
@@ -47,7 +47,7 @@ public class KillauraCheck {
             double yawDifference = calculateYawDifference(player.getLocation(), entity.getLocation());
             double angleDifference = Math.abs(180 - Math.abs(Math.abs(yawDifference - player.yaw) - 180));
             if (Math.round(angleDifference) > CheckType.KILLAURA.otherData.getInteger("angle")) {
-                return CheckResult.FAILED;
+                new CheckResult("tried to attack from an illegal angle (angle=" + Math.round(angleDifference) + ")");
             }
         }
         return CheckResult.PASSED;
@@ -64,10 +64,9 @@ public class KillauraCheck {
         // Velocity compensation
         double reachedDistance = target.getLocation().distance(player.getLocation());
         if (reachedDistance > allowedReach)
-            return CheckResult.FAILED;
+            return new CheckResult("reached too far (distance=" + reachedDistance + ", max=" + allowedReach + ")");
         return CheckResult.PASSED;
     }
-
     public static double calculateYawDifference(Location from, Location to) {
         Location clonedFrom = from.clone();
         Vector3f vector=new Vector3f((float)(to.x-clonedFrom.x),(float)(to.y-clonedFrom.y),(float)(to.z-clonedFrom.z));

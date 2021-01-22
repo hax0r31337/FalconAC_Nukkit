@@ -6,8 +6,10 @@ public enum CheckType {
     KILLAURA(CheckCategory.COMBAT),
     KA_BOT(CheckCategory.COMBAT),
     KA_NOSWING(CheckCategory.COMBAT),
+    AIMBOT(CheckCategory.COMBAT),
     CRITICALS(CheckCategory.COMBAT),
-    ILLEGAL_INTERACT(CheckCategory.WORLD);
+    ILLEGAL_INTERACT(CheckCategory.WORLD),
+    FAST_PLACE(CheckCategory.WORLD);
 
     public boolean enable=false;
     public int addVl=1;

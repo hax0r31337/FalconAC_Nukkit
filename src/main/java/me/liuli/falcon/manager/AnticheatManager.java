@@ -7,12 +7,11 @@ import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.utils.OtherUtils;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
 public class AnticheatManager {
-    public static boolean addVL(CheckCache cache, CheckType checkType){
+    public static boolean addVL(CheckCache cache, CheckType checkType,CheckResult result){
         int nowVL=-1,maxVL=-1;
         boolean shouldFlag=false;
         switch (checkType.category){
@@ -78,10 +77,10 @@ public class AnticheatManager {
             }
         }
         if(Configuration.playerDebug){
-            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name()+"."+checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL)}));
+            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name()+"."+checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL),result.message}));
         }
         if(Configuration.consoleDebug){
-            Main.plugin.getLogger().info(cache.player.getName()+" §7failed §b"+checkType.category.name()+"."+checkType.name()+" §fvl:"+nowVL+"/"+maxVL);
+            Main.plugin.getLogger().info(cache.player.getName()+" §7failed §b"+checkType.category.name()+"."+checkType.name()+" §fvl:"+nowVL+"/"+maxVL+" "+result.message);
         }
         return shouldFlag;
     }
@@ -110,7 +109,7 @@ public class AnticheatManager {
                 if(Configuration.punishBoardcast){
                     boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
                 }
-                BanManager.addBan(cache.player,OtherUtils.getTime()+(Configuration.ban* 60L));
+                BanManager.addBan(cache.player,OtherUtils.getTime()+(Configuration.ban*60L));
             }
         }
     }

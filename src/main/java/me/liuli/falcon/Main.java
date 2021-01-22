@@ -2,7 +2,10 @@ package me.liuli.falcon;
 
 import cn.nukkit.plugin.PluginBase;
 import me.liuli.falcon.cache.Configuration;
-import me.liuli.falcon.listener.*;
+import me.liuli.falcon.listener.BlockListener;
+import me.liuli.falcon.listener.EntityListener;
+import me.liuli.falcon.listener.PacketListener;
+import me.liuli.falcon.listener.PlayerListener;
 import me.liuli.falcon.manager.BanManager;
 import me.liuli.falcon.manager.FalconCommand;
 import me.liuli.falcon.manager.MinusVL;
@@ -50,8 +53,5 @@ public class Main extends PluginBase {
     }
     @Override
     public void onDisable() {
-        try {
-            minusVLThread.stop();
-        } catch (Throwable ignored) {}
     }
 }

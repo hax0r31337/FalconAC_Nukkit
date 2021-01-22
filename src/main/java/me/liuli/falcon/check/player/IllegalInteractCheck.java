@@ -24,24 +24,25 @@ public class IllegalInteractCheck {
     }
     private static CheckResult checkInteract(Player player, PlayerInteractEvent event) {
         if (!isValidTarget(player, event.getBlock())) {
-            return CheckResult.FAILED;
+            return new CheckResult("tried to interact a block which was out of view");
         }
         return CheckResult.PASSED;
     }
     private static CheckResult checkBlockBreak(Player player, BlockBreakEvent event) {
         if (!isValidTarget(player, event.getBlock())) {
-            return CheckResult.FAILED;
+            return new CheckResult("tried to break a block which was out of view");
         }
         return CheckResult.PASSED;
     }
     private static CheckResult checkBlockPlace(Player player, BlockPlaceEvent event) {
         if (event.getBlock().isSolid() && !isValidTarget(player, event.getBlock())) {
-            return CheckResult.FAILED;
+            return new CheckResult("tried to place a block out of their view");
         }
         return CheckResult.PASSED;
     }
     private static boolean isValidTarget(Player player, Block block) {
-        double distance = player.getLocation().distance(new Vector3(block.x,block.y,block.z));
+        Vector3 blockVec3=new Vector3(block.x,block.y,block.z);
+        double distance = player.getLocation().distance(blockVec3);
         double maxDistance = player.gamemode == 1
                 ? CheckType.ILLEGAL_INTERACT.otherData.getDouble("creativeRange")
                 : CheckType.ILLEGAL_INTERACT.otherData.getDouble("survivalRange");

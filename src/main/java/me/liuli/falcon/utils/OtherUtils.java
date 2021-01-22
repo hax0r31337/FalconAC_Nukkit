@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -80,7 +79,7 @@ public class OtherUtils {
         return result.toString();
     }
     public static long getTime(){
-        return (new Date().getTime()/1000);
+        return (System.currentTimeMillis()/1000);
     }
     public static void readJar(String fileName,String JarDir,String path){
         try {

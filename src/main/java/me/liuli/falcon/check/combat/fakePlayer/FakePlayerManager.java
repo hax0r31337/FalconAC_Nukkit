@@ -64,7 +64,7 @@ public class FakePlayerManager {
         }
         if (entityId == CheckCache.get(event.getPlayer()).fakePlayer.getEntityId()) {
             FakePlayerManager.botHurt(event.getPlayer());
-            return CheckResult.FAILED;
+            return new CheckResult("Trying to attack a fakeplayer");
         }
         return CheckResult.PASSED;
     }

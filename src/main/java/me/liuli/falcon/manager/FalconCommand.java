@@ -1,8 +1,11 @@
 package me.liuli.falcon.manager;
 
+import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import me.liuli.falcon.cache.Configuration;
+import me.liuli.falcon.utils.OtherUtils;
 
 public class FalconCommand extends Command {
     private static String versionStr;
@@ -17,6 +20,23 @@ public class FalconCommand extends Command {
             return false;
         }
         switch (args[0]){
+            case "ban":{
+                Player player=Server.getInstance().getPlayer(args[1]);
+                if(player==null){
+                    sender.sendMessage(Configuration.LANG.ALERT_PREFIX.proc()+"Cannot found player");
+                    return false;
+                }
+                long banTime=OtherUtils.getTime()+(Configuration.ban*60L);
+                if(args.length==3){
+                    banTime=OtherUtils.getTime()+new Long(args[2]);
+                }
+                BanManager.addBan(player,banTime);
+                break;
+            }
+            case "unban":{
+                BanManager.removeBan(args[1]);
+                break;
+            }
             case "consoledebug":{
                 if(sender.isOp()){
                     Configuration.consoleDebug=!Configuration.consoleDebug;

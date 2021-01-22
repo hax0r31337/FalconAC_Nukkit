@@ -12,7 +12,7 @@ public class CriticalsCheck {
         if (isCritical(player)) {
             if ((player.getLocation().getY() % 1.0 == 0 || player.getLocation().getY() % 0.5 == 0)
                     && player.getLocation().clone().subtract(0, 1.0, 0).getLevelBlock().isSolid()) {
-                return CheckResult.FAILED;
+                return new CheckResult("tried to do a critical without needed conditions");
             }
         }
         return CheckResult.PASSED;

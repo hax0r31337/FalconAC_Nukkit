@@ -61,3 +61,15 @@ modules:
     creativeRange: 6.8
     # Extra allowed reach distance per millisecond of ping
     pingCompensation: 0.0045
+  fastplace:
+    enable: true
+    vl: 5
+    # Minimum time in milliseconds between block places
+    minimumTime: 85
+  aimbot:
+    enable: true
+    vl: 5
+    # Maximum head rot per tick
+    maxRotate: 90
+    smoothMin: 4
+    smoothSame: 3

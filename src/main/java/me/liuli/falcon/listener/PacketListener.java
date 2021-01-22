@@ -25,7 +25,7 @@ public class PacketListener implements Listener {
             if(AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.KA_BOT)) {
                 CheckResult checkResult = FakePlayerManager.checkBotHurt(event, (InventoryTransactionPacket) packet);
                 if (checkResult.failed()) {
-                    shouldFlag = AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.KA_BOT);
+                    shouldFlag = AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.KA_BOT,checkResult);
                 }
             }
         }

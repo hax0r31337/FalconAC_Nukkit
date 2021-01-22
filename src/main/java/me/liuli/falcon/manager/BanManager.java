@@ -25,6 +25,9 @@ public class BanManager {
         saveBanData();
         checkBan(player);
     }
+    public static void removeBan(String banid){
+        banJSON.remove(banid);
+    }
     public static void checkBan(Player player){
         String banid=banIdGen(player.getUniqueId());
         Long expire=banJSON.getLong(banid);
