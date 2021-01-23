@@ -1,6 +1,7 @@
 package me.liuli.falcon.cache;
 
 import cn.nukkit.Player;
+import cn.nukkit.level.Position;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayer;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayerManager;
 import me.liuli.falcon.manager.AnticheatManager;
@@ -18,8 +19,20 @@ public class CheckCache {
     public long lastHurt;
     public int CombatVL=0,MovementVL=0,WorldVL=0,MiscVL=0;
     public boolean warn=false;
+    public long lastTPTime;
+    //fast place check
+    public long lastPlace=0L;
+    //aimbot check
+    public int lastRot=0,sameRot=0;
+    //noswing check
+    public long lastSwing=0;
+    //timer check
+    public long lastMovePacket;
+    public double packetBalance=0;
 
     public CheckCache(Player player){
+        long timeNow=System.currentTimeMillis();
+
         checkCacheMap.put(player.getName(),this);
         this.player=player;
         lastHurt=new Date().getTime();
@@ -27,6 +40,8 @@ public class CheckCache {
         if(AnticheatManager.canCheckPlayer(player,CheckType.KA_BOT)) {
             fakePlayer = FakePlayerManager.spawnFake(player);
         }
+        lastTPTime=timeNow;
+        lastMovePacket=timeNow;
     }
     public static CheckCache get(Player player){
         return get(player.getName());

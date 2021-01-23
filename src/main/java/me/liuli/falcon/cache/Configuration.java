@@ -72,11 +72,13 @@ public class Configuration {
         //load modules
         loadType(CheckType.KILLAURA,moduleJSON.getJSONObject("killaura"));
         loadType(CheckType.KA_BOT,moduleJSON.getJSONObject("killaura_bot"));
-        loadType(CheckType.KA_NOSWING,moduleJSON.getJSONObject("killaura_noswing"));
         loadType(CheckType.AIMBOT,moduleJSON.getJSONObject("aimbot"));
         loadType(CheckType.CRITICALS,moduleJSON.getJSONObject("criticals"));
         loadType(CheckType.ILLEGAL_INTERACT,moduleJSON.getJSONObject("illegalinteract"));
         loadType(CheckType.FAST_PLACE,moduleJSON.getJSONObject("fastplace"));
+        loadType(CheckType.TIMER,moduleJSON.getJSONObject("timer"));
+        loadType(CheckType.NOSWING,moduleJSON.getJSONObject("noswing"));
+        loadType(CheckType.BADPACKETS,moduleJSON.getJSONObject("badpackets"));
     }
     private static void loadCategory(CheckCategory category,JSONObject data){
         category.vl=data.getInteger("vl");

@@ -10,6 +10,7 @@ import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.combat.CriticalsCheck;
 import me.liuli.falcon.check.combat.KillauraCheck;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayerManager;
+import me.liuli.falcon.check.misc.NoSwingCheck;
 import me.liuli.falcon.manager.AnticheatManager;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
@@ -46,8 +47,8 @@ public class EntityListener implements Listener {
                     shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.CRITICALS,checkResult);
                 }
             }
-            if(AnticheatManager.canCheckPlayer(player,CheckType.KA_NOSWING)){
-                KillauraCheck.addSwingCheckTimer(player);
+            if(AnticheatManager.canCheckPlayer(player,CheckType.NOSWING)){
+                NoSwingCheck.check(player);
             }
         }
         if(shouldFlag&&Configuration.flag){

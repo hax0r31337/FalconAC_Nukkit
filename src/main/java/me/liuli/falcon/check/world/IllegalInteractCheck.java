@@ -1,4 +1,4 @@
-package me.liuli.falcon.check.player;
+package me.liuli.falcon.check.world;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;

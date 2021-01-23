@@ -8,7 +8,7 @@ import cn.nukkit.event.player.*;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.combat.AimbotCheck;
-import me.liuli.falcon.check.player.IllegalInteractCheck;
+import me.liuli.falcon.check.world.IllegalInteractCheck;
 import me.liuli.falcon.manager.AnticheatManager;
 import me.liuli.falcon.manager.BanManager;
 import me.liuli.falcon.manager.CheckResult;
@@ -56,5 +56,10 @@ public class PlayerListener implements Listener {
         if(shouldFlag&&Configuration.flag){
             event.setCancelled();
         }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        CheckCache cache=CheckCache.get(event.getPlayer());
+        cache.lastTPTime=System.currentTimeMillis();
     }
 }

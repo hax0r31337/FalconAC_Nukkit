@@ -33,6 +33,13 @@ checks:
     warn: 150
     result: 'KICK'
 modules:
+  aimbot:
+    enable: true
+    vl: 5
+    # Maximum head rot per tick
+    maxRotate: 90
+    smoothMin: 4
+    smoothSame: 3
   killaura:
     enable: true
     vl: 7
@@ -43,10 +50,6 @@ modules:
   killaura_bot:
     enable: true
     vl: 10
-  killaura_noswing:
-    enable: true
-    vl: 10
-    swing: 200 # Maximum delay of swing and attack(ms)
   criticals:
     enable: true
     vl: 5
@@ -66,10 +69,27 @@ modules:
     vl: 5
     # Minimum time in milliseconds between block places
     minimumTime: 85
-  aimbot:
+  timer:
     enable: true
-    vl: 5
-    # Maximum head rot per tick
-    maxRotate: 90
-    smoothMin: 4
-    smoothSame: 3
+    vl: 10
+    # Minimum server TPS needed for MorePackets to be active
+    minimumTps: 17.5
+    # Maximum amount of lag compensation a player can acquire (50ms = 1 tick)
+    minimumClamp: 1000
+    # The amount of milliseconds offset between packets before flagging (50ms = 1 tick)
+    triggerBalance: 100
+    # The amount of milliseconds to compensate for a teleport (50ms = 1 tick)
+    teleportCompensation: 300
+  noswing:
+    enable: true
+    vl: 10
+    swing: 200 # Maximum delay of swing and attack(ms)
+  badpackets:
+    enable: true
+    vl: 20
+    #check is the entityid in packet is correct
+    badId: true
+    #check is the pitch is correct
+    derp: true
+    #check bad inventory action
+    inventory: true

@@ -2,17 +2,16 @@ package me.liuli.falcon.check.combat;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.player.PlayerMoveEvent;
+import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class AimbotCheck {
-    private static Map<UUID,Integer> lastRot=new HashMap<>();
-    private static Map<UUID,Integer> sameRot=new HashMap<>();
     public static CheckResult check(Player player, PlayerMoveEvent event){
+        CheckCache cache=CheckCache.get(player);
+        if((System.currentTimeMillis()-cache.lastTPTime)<1000) return CheckResult.PASSED;
         int maxRot=CheckType.AIMBOT.otherData.getInteger("maxRotate");
         int smoothMin=CheckType.AIMBOT.otherData.getInteger("smoothMin");
         int smoothSame=CheckType.AIMBOT.otherData.getInteger("smoothSame");
@@ -25,16 +24,14 @@ public class AimbotCheck {
         }
 
         UUID playerUUID=player.getUniqueId();
-        if(!lastRot.containsKey(playerUUID)) lastRot.put(playerUUID,0);
-        if(!sameRot.containsKey(playerUUID)) sameRot.put(playerUUID,0);
-        if(moveLength>smoothMin&&(lastRot.get(playerUUID)/smoothMin)==(moveLength/smoothMin)){
-            sameRot.put(playerUUID,sameRot.get(playerUUID)+1);
+        if(moveLength>smoothMin&&(cache.lastRot/smoothMin)==(moveLength/smoothMin)){
+            cache.sameRot++;
         }else{
-            sameRot.put(playerUUID,0);
+            cache.sameRot=0;
         }
-        lastRot.put(playerUUID,moveLength);
-        if(sameRot.get(playerUUID)>smoothSame){
-            return new CheckResult("Rotate too smooth(speed="+moveLength+",times="+sameRot.get(playerUUID)+")");
+        cache.lastRot=moveLength;
+        if(cache.sameRot>smoothSame){
+            return new CheckResult("Rotate too smooth(speed="+moveLength+",times="+cache.sameRot+")");
         }
         return CheckResult.PASSED;
     }
