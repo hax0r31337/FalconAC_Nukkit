@@ -8,11 +8,9 @@ import cn.nukkit.event.player.*;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.combat.AimbotCheck;
+import me.liuli.falcon.check.movement.NoClipCheck;
 import me.liuli.falcon.check.world.IllegalInteractCheck;
-import me.liuli.falcon.manager.AnticheatManager;
-import me.liuli.falcon.manager.BanManager;
-import me.liuli.falcon.manager.CheckResult;
-import me.liuli.falcon.manager.CheckType;
+import me.liuli.falcon.manager.*;
 
 public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -25,7 +23,7 @@ public class PlayerListener implements Listener {
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event){
-        CheckCache.remove(event.getPlayer().getName());
+        CheckCache.remove(event.getPlayer());
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -36,12 +34,14 @@ public class PlayerListener implements Listener {
             if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.ILLEGAL_INTERACT)) {
                 CheckResult result = IllegalInteractCheck.performCheck(event.getPlayer(), event);
                 if (result.failed()) {
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.ILLEGAL_INTERACT,result);
+                    shouldFlag=AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT,result);
                 }
             }
         }
         if(shouldFlag&&Configuration.flag){
             event.setCancelled();
+        }else{
+            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -50,11 +50,19 @@ public class PlayerListener implements Listener {
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.AIMBOT)) {
             CheckResult result = AimbotCheck.check(event.getPlayer(), event);
             if (result.failed()) {
-                shouldFlag=AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.AIMBOT,result);
+                shouldFlag=AnticheatManager.addVL(event.getPlayer(), CheckType.AIMBOT,result);
+            }
+        }
+        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.AIMBOT)) {
+            CheckResult result = NoClipCheck.check(event.getPlayer(), event);
+            if (result.failed()) {
+                shouldFlag=AnticheatManager.addVL(event.getPlayer(), CheckType.NOCLIP,result);
             }
         }
         if(shouldFlag&&Configuration.flag){
             event.setCancelled();
+        }else{
+            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.MOVEMENT);
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST)

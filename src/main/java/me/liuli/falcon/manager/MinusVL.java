@@ -18,17 +18,17 @@ public class MinusVL implements Runnable {
                     if(checkCache==null){
                         continue;
                     }
-                    if(checkCache.CombatVL>0){
-                        checkCache.CombatVL-=CheckCategory.COMBAT.minusVl;
+                    if(checkCache.combatVL>0){
+                        checkCache.combatVL-=CheckCategory.COMBAT.minusVl;
                     }
-                    if(checkCache.MovementVL>0){
-                        checkCache.MovementVL-=CheckCategory.MOVEMENT.minusVl;
+                    if(checkCache.movementVL>0){
+                        checkCache.movementVL-=CheckCategory.MOVEMENT.minusVl;
                     }
-                    if(checkCache.WorldVL>0){
-                        checkCache.WorldVL-=CheckCategory.WORLD.minusVl;
+                    if(checkCache.worldVL>0){
+                        checkCache.worldVL-=CheckCategory.WORLD.minusVl;
                     }
-                    if(checkCache.MiscVL>0){
-                        checkCache.MiscVL-=CheckCategory.MISC.minusVl;
+                    if(checkCache.miscVL>0){
+                        checkCache.miscVL-=CheckCategory.MISC.minusVl;
                     }
                 }
             } catch (Throwable e) {

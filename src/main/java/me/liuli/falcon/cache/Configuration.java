@@ -74,6 +74,7 @@ public class Configuration {
         loadType(CheckType.KA_BOT,moduleJSON.getJSONObject("killaura_bot"));
         loadType(CheckType.AIMBOT,moduleJSON.getJSONObject("aimbot"));
         loadType(CheckType.CRITICALS,moduleJSON.getJSONObject("criticals"));
+        loadType(CheckType.NOCLIP,moduleJSON.getJSONObject("noclip"));
         loadType(CheckType.ILLEGAL_INTERACT,moduleJSON.getJSONObject("illegalinteract"));
         loadType(CheckType.FAST_PLACE,moduleJSON.getJSONObject("fastplace"));
         loadType(CheckType.TIMER,moduleJSON.getJSONObject("timer"));
@@ -83,6 +84,7 @@ public class Configuration {
     private static void loadCategory(CheckCategory category,JSONObject data){
         category.vl=data.getInteger("vl");
         category.minusVl=data.getInteger("vl-minus");
+        category.passMinus=data.getInteger("pass-minus");
         category.flagVl=data.getInteger("flag");
         category.warnVl=data.getInteger("warn");
         category.result=PunishResult.valueOf(data.getString("result"));

@@ -11,67 +11,68 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AnticheatManager {
-    public static boolean addVL(CheckCache cache, CheckType checkType,CheckResult result){
+    public static boolean addVL(Player player, CheckType checkType,CheckResult result){
+        CheckCache cache=CheckCache.get(player);
         int nowVL=-1,maxVL=-1;
         boolean shouldFlag=false;
         switch (checkType.category){
             case COMBAT:{
-                cache.CombatVL+=checkType.addVl;
-                if(cache.CombatVL>CheckCategory.COMBAT.warnVl){
+                cache.combatVL+=checkType.addVl;
+                if(cache.combatVL>CheckCategory.COMBAT.warnVl){
                     warnPlayer(cache);
                 }
-                if(cache.CombatVL>CheckCategory.COMBAT.vl){
+                if(cache.combatVL>CheckCategory.COMBAT.vl){
                     punishPlayer(cache,checkType.category);
                 }
-                if(cache.CombatVL>CheckCategory.COMBAT.flagVl){
+                if(cache.combatVL>CheckCategory.COMBAT.flagVl){
                     shouldFlag=true;
                 }
-                nowVL=cache.CombatVL;
+                nowVL=cache.combatVL;
                 maxVL=CheckCategory.COMBAT.vl;
                 break;
             }
             case MOVEMENT:{
-                cache.MovementVL+=checkType.addVl;
-                if(cache.MovementVL>CheckCategory.MOVEMENT.warnVl){
+                cache.movementVL+=checkType.addVl;
+                if(cache.movementVL>CheckCategory.MOVEMENT.warnVl){
                     warnPlayer(cache);
                 }
-                if(cache.MovementVL>CheckCategory.MOVEMENT.vl){
+                if(cache.movementVL>CheckCategory.MOVEMENT.vl){
                     punishPlayer(cache,checkType.category);
                 }
-                if(cache.MovementVL>CheckCategory.MOVEMENT.flagVl){
+                if(cache.movementVL>CheckCategory.MOVEMENT.flagVl){
                     shouldFlag=true;
                 }
-                nowVL=cache.MovementVL;
+                nowVL=cache.movementVL;
                 maxVL=CheckCategory.MOVEMENT.vl;
                 break;
             }
             case WORLD:{
-                cache.WorldVL+=checkType.addVl;
-                if(cache.WorldVL>CheckCategory.WORLD.warnVl){
+                cache.worldVL+=checkType.addVl;
+                if(cache.worldVL>CheckCategory.WORLD.warnVl){
                     warnPlayer(cache);
                 }
-                if(cache.WorldVL>CheckCategory.WORLD.vl){
+                if(cache.worldVL>CheckCategory.WORLD.vl){
                     punishPlayer(cache,checkType.category);
                 }
-                if(cache.WorldVL>CheckCategory.WORLD.flagVl){
+                if(cache.worldVL>CheckCategory.WORLD.flagVl){
                     shouldFlag=true;
                 }
-                nowVL=cache.WorldVL;
+                nowVL=cache.worldVL;
                 maxVL=CheckCategory.WORLD.vl;
                 break;
             }
             case MISC:{
-                cache.MiscVL+=checkType.addVl;
-                if(cache.MiscVL>CheckCategory.MISC.warnVl){
+                cache.miscVL+=checkType.addVl;
+                if(cache.miscVL>CheckCategory.MISC.warnVl){
                     warnPlayer(cache);
                 }
-                if(cache.MiscVL>CheckCategory.MISC.vl){
+                if(cache.miscVL>CheckCategory.MISC.vl){
                     punishPlayer(cache,checkType.category);
                 }
-                if(cache.MiscVL>CheckCategory.MISC.flagVl){
+                if(cache.miscVL>CheckCategory.MISC.flagVl){
                     shouldFlag=true;
                 }
-                nowVL=cache.MiscVL;
+                nowVL=cache.miscVL;
                 maxVL=CheckCategory.MISC.vl;
                 break;
             }
@@ -83,6 +84,35 @@ public class AnticheatManager {
             Main.plugin.getLogger().info(cache.player.getName()+" §7failed §b"+checkType.category.name()+"."+checkType.name()+" §fvl:"+nowVL+"/"+maxVL+" "+result.message);
         }
         return shouldFlag;
+    }
+    public static void minusPassVl(Player player,CheckCategory category){
+        CheckCache cache=CheckCache.get(player);
+        switch (category){
+            case COMBAT:{
+                if((cache.combatVL-category.passMinus)>=0) {
+                    cache.combatVL -= category.passMinus;
+                }
+                break;
+            }
+            case MOVEMENT:{
+                if((cache.movementVL-category.passMinus)>=0) {
+                    cache.movementVL -= category.passMinus;
+                }
+                break;
+            }
+            case WORLD:{
+                if((cache.worldVL-category.passMinus)>=0) {
+                    cache.worldVL -= category.passMinus;
+                }
+                break;
+            }
+            case MISC:{
+                if((cache.miscVL-category.passMinus)>=0) {
+                    cache.miscVL -= category.passMinus;
+                }
+                break;
+            }
+        }
     }
     public static void warnPlayer(CheckCache cache){
         if(!cache.warn) {

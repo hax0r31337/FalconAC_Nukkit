@@ -50,6 +50,7 @@ public class Main extends PluginBase {
 
         //done
         plugin.getLogger().info("§l§6Falcon§bAC §rLOADED!");
+        plugin.getLogger().info("This is an open-source project:https://github.com/liulihaocai/FalconAC");
     }
     @Override
     public void onDisable() {

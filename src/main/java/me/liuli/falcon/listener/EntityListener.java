@@ -12,6 +12,7 @@ import me.liuli.falcon.check.combat.KillauraCheck;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayerManager;
 import me.liuli.falcon.check.misc.NoSwingCheck;
 import me.liuli.falcon.manager.AnticheatManager;
+import me.liuli.falcon.manager.CheckCategory;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 
@@ -34,25 +35,27 @@ public class EntityListener implements Listener {
             if(AnticheatManager.canCheckPlayer(player,CheckType.KILLAURA)){
                 CheckResult checkResult=KillauraCheck.checkAngle(player,event);
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA,checkResult);
+                    shouldFlag=AnticheatManager.addVL(player, CheckType.KILLAURA,checkResult);
                 }
                 checkResult=KillauraCheck.checkReach(player,event.getEntity());
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.KILLAURA,checkResult);
+                    shouldFlag=AnticheatManager.addVL(player, CheckType.KILLAURA,checkResult);
                 }
             }
             if(AnticheatManager.canCheckPlayer(player,CheckType.CRITICALS)){
                 CheckResult checkResult=CriticalsCheck.doDamageEvent(event);
                 if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(CheckCache.get(player), CheckType.CRITICALS,checkResult);
+                    shouldFlag=AnticheatManager.addVL(player, CheckType.CRITICALS,checkResult);
                 }
             }
             if(AnticheatManager.canCheckPlayer(player,CheckType.NOSWING)){
                 NoSwingCheck.check(player);
             }
-        }
-        if(shouldFlag&&Configuration.flag){
-            event.setCancelled();
+            if(shouldFlag&&Configuration.flag){
+                event.setCancelled();
+            }else{
+                AnticheatManager.minusPassVl(player, CheckCategory.COMBAT);
+            }
         }
     }
 }

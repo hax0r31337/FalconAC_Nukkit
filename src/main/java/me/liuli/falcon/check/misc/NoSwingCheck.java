@@ -21,7 +21,7 @@ public class NoSwingCheck {
             public void run() {
                 CheckResult checkResult=checkSwing(player);
                 if(checkResult.failed()){
-                    AnticheatManager.addVL(CheckCache.get(player), CheckType.NOSWING,checkResult);
+                    AnticheatManager.addVL(player, CheckType.NOSWING,checkResult);
                 }
             }
         }, CheckType.NOSWING.otherData.getInteger("swing")/2);

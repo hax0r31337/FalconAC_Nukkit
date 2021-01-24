@@ -7,6 +7,7 @@ public enum CheckType {
     KA_BOT(CheckCategory.COMBAT),
     AIMBOT(CheckCategory.COMBAT),
     CRITICALS(CheckCategory.COMBAT),
+    NOCLIP(CheckCategory.MOVEMENT),
     ILLEGAL_INTERACT(CheckCategory.WORLD),
     FAST_PLACE(CheckCategory.WORLD),
     TIMER(CheckCategory.WORLD),

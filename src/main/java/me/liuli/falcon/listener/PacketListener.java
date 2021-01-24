@@ -29,7 +29,7 @@ public class PacketListener implements Listener {
             if(AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.KA_BOT)) {
                 CheckResult checkResult = FakePlayerManager.checkBotHurt(event, (InventoryTransactionPacket) packet);
                 if (checkResult.failed()) {
-                    shouldFlag = AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.KA_BOT,checkResult);
+                    shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.KA_BOT,checkResult);
                 }
             }
         }
@@ -42,14 +42,14 @@ public class PacketListener implements Listener {
             if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.TIMER)) {
                 CheckResult checkResult = TimerCheck.runCheck(event.getPlayer());
                 if (checkResult.failed()) {
-                    shouldFlag = AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.TIMER,checkResult);
+                    shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.TIMER,checkResult);
                 }
             }
         }
         if (!event.isCancelled()) {
             CheckResult checkResult = BadPacketsCheck.runCheck(event.getPlayer(),event.getPacket());
             if (checkResult.failed()) {
-                shouldFlag = AnticheatManager.addVL(CheckCache.get(event.getPlayer()), CheckType.BADPACKETS,checkResult);
+                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.BADPACKETS,checkResult);
             }
         }
         if(shouldFlag&&Configuration.flag){

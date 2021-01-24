@@ -11,24 +11,28 @@ checks:
   combat:
     vl: 500
     vl-minus: 1 #minus vl value per sec
+    pass-minus: 3
     flag: 100 #vl before flag
     warn: 300 #vl before warn
     result: 'KICK' #NONE,KICK,BAN
   movement:
-    vl: 500
+    vl: 1000
     vl-minus: 2
+    pass-minus: 1
     flag: 100
     warn: 300
     result: 'KICK'
   world:
     vl: 500
     vl-minus: 1
+    pass-minus: 3
     flag: 100
     warn: 300
     result: 'KICK'
   misc:
     vl: 250
     vl-minus: 1
+    pass-minus: 2
     flag: 100
     warn: 150
     result: 'KICK'
@@ -53,6 +57,9 @@ modules:
   criticals:
     enable: true
     vl: 5
+  noclip:
+    enable: true
+    vl: 15
   illegalinteract:
     enable: true
     vl: 10
