@@ -2,7 +2,6 @@ package me.liuli.falcon.utils;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockID;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
@@ -11,18 +10,11 @@ import me.liuli.falcon.other.BlockRelative;
 public class MoveUtils {
     public static final double JUMP_MOTION_Y = 0.41999998688697815;
 
-    public static boolean couldBeOnSlime(Location location) {
+    public static boolean couldBeOnBlock(Location location,int id) {
         return isNearBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.01D,
-                location.getZ()), location.getLevel()).getLevelBlock(), BlockID.SLIME_BLOCK)
-                || isBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.51D,
-                location.getZ()), location.getLevel()).getLevelBlock(), BlockID.SLIME_BLOCK);
-    }
-
-    public static boolean couldBeOnIce(Location location) {
-        return isNearBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.01D,
-                location.getZ()), location.getLevel()).getLevelBlock(), BlockID.ICE)
+                location.getZ()), location.getLevel()).getLevelBlock(), id)
                 || isNearBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.51D,
-                location.getZ()), location.getLevel()).getLevelBlock(), BlockID.ICE);
+                location.getZ()), location.getLevel()).getLevelBlock(), id);
     }
 
     public static boolean isNearBlock(Position position, int id) {

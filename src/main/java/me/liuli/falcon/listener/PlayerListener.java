@@ -67,6 +67,9 @@ public class PlayerListener implements Listener {
         Distance distance = new Distance(from, to);
         CheckCache.get(event.getPlayer()).movementCache.handle(event.getPlayer(), from, to, distance);
 
+        double x = distance.getXDifference();
+        double z = distance.getZDifference();
+
         boolean shouldFlag = false;
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.AIMBOT)) {
             CheckResult result = AimbotCheck.check(event.getPlayer(), event);
@@ -85,15 +88,19 @@ public class PlayerListener implements Listener {
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.SPEED, result);
             }
+            result = SpeedCheck.checkXZSpeed(event.getPlayer(), x,z,event.getTo());
+            if (result.failed()) {
+                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.SPEED, result);
+            }
         }
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.STRAFE)) {
-            CheckResult result = StrafeCheck.runCheck(event.getPlayer(), distance.getXDifference(), distance.getZDifference(), event.getFrom(), event.getTo());
+            CheckResult result = StrafeCheck.runCheck(event.getPlayer(), x,z, event.getFrom(), event.getTo());
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.STRAFE, result);
             }
         }
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.WATER_WALK)) {
-            CheckResult result = WaterWalkCheck.runCheck(event.getPlayer(), distance.getXDifference(), distance.getYDifference(), distance.getZDifference());
+            CheckResult result = WaterWalkCheck.runCheck(event.getPlayer(), x, distance.getYDifference(), z);
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.WATER_WALK, result);
             }

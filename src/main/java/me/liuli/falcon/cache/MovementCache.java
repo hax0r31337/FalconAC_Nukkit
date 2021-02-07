@@ -118,7 +118,7 @@ public class MovementCache {
             this.groundTicks++;
         }
 
-        if (MoveUtils.couldBeOnIce(to)) {
+        if (MoveUtils.couldBeOnBlock(to,Block.ICE)) {
             this.iceTicks++;
             this.iceInfluenceTicks = 60;
         } else {
@@ -127,7 +127,7 @@ public class MovementCache {
                 this.iceInfluenceTicks--;
         }
 
-        if (MoveUtils.couldBeOnSlime(to)) {
+        if (MoveUtils.couldBeOnBlock(to,Block.SLIME_BLOCK)) {
             this.slimeTicks++;
             this.slimeInfluenceTicks = 40;
         } else {

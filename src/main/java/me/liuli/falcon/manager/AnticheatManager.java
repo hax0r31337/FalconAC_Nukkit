@@ -77,11 +77,12 @@ public class AnticheatManager {
                 break;
             }
         }
+        String debugMsg=result.message+" (tps="+Server.getInstance().getTicksPerSecond()+",ping="+player.getPing()+")";
         if (Configuration.playerDebug) {
-            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name() + "." + checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL), result.message}));
+            cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name() + "." + checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL), debugMsg}));
         }
         if (Configuration.consoleDebug) {
-            FalconAC.plugin.getLogger().info(cache.player.getName() + " §7failed §b" + checkType.category.name() + "." + checkType.name() + " §fvl:" + nowVL + "/" + maxVL + " " + result.message);
+            FalconAC.plugin.getLogger().info(cache.player.getName() + " §7failed §b" + checkType.category.name() + "." + checkType.name() + " §fvl:" + nowVL + "/" + maxVL + " " + debugMsg);
         }
         return shouldFlag;
     }
