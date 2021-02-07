@@ -18,42 +18,42 @@ import me.liuli.falcon.manager.CheckType;
 
 public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event){
-        boolean shouldFlag=false;
-        if(event.getEntity() instanceof Player){
-            Player player=(Player) event.getEntity();
-            if(AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        boolean shouldFlag = false;
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
                 CheckCache.get(player).fakePlayer.doSwing(player);
             }
         }
-        if(event.getDamager() instanceof Player){
-            Player player=(Player) event.getDamager();
-            if(AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            if (AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
                 CheckCache.get(player).fakePlayer.showDamage(player);
                 FakePlayerManager.playerHurt(player);
             }
-            if(AnticheatManager.canCheckPlayer(player,CheckType.KILLAURA)){
-                CheckResult checkResult=KillauraCheck.checkAngle(player,event);
-                if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(player, CheckType.KILLAURA,checkResult);
+            if (AnticheatManager.canCheckPlayer(player, CheckType.KILLAURA)) {
+                CheckResult checkResult = KillauraCheck.checkAngle(player, event);
+                if (checkResult.failed()) {
+                    shouldFlag = AnticheatManager.addVL(player, CheckType.KILLAURA, checkResult);
                 }
-                checkResult=KillauraCheck.checkReach(player,event.getEntity());
-                if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(player, CheckType.KILLAURA,checkResult);
-                }
-            }
-            if(AnticheatManager.canCheckPlayer(player,CheckType.CRITICALS)){
-                CheckResult checkResult=CriticalsCheck.doDamageEvent(event);
-                if(checkResult.failed()){
-                    shouldFlag=AnticheatManager.addVL(player, CheckType.CRITICALS,checkResult);
+                checkResult = KillauraCheck.checkReach(player, event.getEntity());
+                if (checkResult.failed()) {
+                    shouldFlag = AnticheatManager.addVL(player, CheckType.KILLAURA, checkResult);
                 }
             }
-            if(AnticheatManager.canCheckPlayer(player,CheckType.NOSWING)){
+            if (AnticheatManager.canCheckPlayer(player, CheckType.CRITICALS)) {
+                CheckResult checkResult = CriticalsCheck.doDamageEvent(event);
+                if (checkResult.failed()) {
+                    shouldFlag = AnticheatManager.addVL(player, CheckType.CRITICALS, checkResult);
+                }
+            }
+            if (AnticheatManager.canCheckPlayer(player, CheckType.NOSWING)) {
                 NoSwingCheck.check(player);
             }
-            if(shouldFlag&&Configuration.flag){
+            if (shouldFlag && Configuration.flag) {
                 event.setCancelled();
-            }else{
+            } else {
                 AnticheatManager.minusPassVl(player, CheckCategory.COMBAT);
             }
         }

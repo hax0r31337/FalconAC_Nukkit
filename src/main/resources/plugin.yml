@@ -1,6 +1,6 @@
 
 name: FalconAC
-main: me.liuli.falcon.Main
+main: me.liuli.falcon.FalconAC
 version: "1.0"
 author: liulihaocai
 api: ["1.0.0"]

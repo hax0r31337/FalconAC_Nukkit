@@ -16,11 +16,11 @@ checks:
     warn: 300 #vl before warn
     result: 'KICK' #NONE,KICK,BAN
   movement:
-    vl: 1000
-    vl-minus: 2
-    pass-minus: 1
-    flag: 100
-    warn: 300
+    vl: 700
+    vl-minus: 1
+    pass-minus: 2
+    flag: 200
+    warn: 500
     result: 'KICK'
   world:
     vl: 500
@@ -41,7 +41,7 @@ modules:
     enable: true
     vl: 5
     # Maximum head rot per tick
-    maxRotate: 90
+    maxRotate: 120
     smoothMin: 4
     smoothSame: 3
   killaura:
@@ -57,14 +57,47 @@ modules:
   criticals:
     enable: true
     vl: 5
+  speed:
+    enable: true
+    vl: 15
+    # Checks movement speed in the air
+    # Debugs as 'moved too fast in air'
+    airSpeed:
+      # Base unadjusted air speed limit
+      baseLimit: 0.03125
+      # Prediction multiplier for custom walk speeds
+      walkSpeedMultiplier: 1.4
+    # Checks movement acceleration in the air
+    # Debugs as 'exceeded acceleration limits'
+    airAcceleration:
+      # Base unadjusted air acceleration limit
+      baseLimit: 0.3725
+      # Limit multiplier for custom walk speeds
+      walkSpeedMultiplier: 1.4
+    # Minimum movement distance needed to flag
+    jumpMinimumDistXZ: 0.42
+    # Initial speed limit value
+    groundInitialLimit: 0.34
+    # Extra compensation when moving off a ladder up a slab
+    verticalCompensation: 0.04
+  strafe:
+    enable: true
+    vl: 30
+    # Maximum angle change when moving in air
+    maxAngleChange: 0.5
+    # Minimum movement distance for the strafe check to be active
+    minActivationDistance: 0.04
+  waterwalk:
+    enable: true
+    vl: 25
+    walkMinimumDistXZ: 0.092
+    lungeMinimumDistXZ: 0.098
   noclip:
     enable: true
     vl: 15
   illegalinteract:
     enable: true
     vl: 10
-    # Maximum difference in angle from the players view
-    angle: 90
     # Default survival interact range
     survivalRange: 5.8
     # Default creative interact range
@@ -94,9 +127,7 @@ modules:
   badpackets:
     enable: true
     vl: 20
-    #check is the entityid in packet is correct
+    #check is the entityId in packet is correct
     badId: true
     #check is the pitch is correct
     derp: true
-    #check bad inventory action
-    inventory: true

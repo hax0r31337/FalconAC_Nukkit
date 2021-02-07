@@ -12,47 +12,53 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CheckCache {
-    private static final Map<UUID,CheckCache> checkCacheMap=new HashMap<>();
+    private static final Map<UUID, CheckCache> checkCacheMap = new HashMap<>();
+    public MovementCache movementCache;
     public FakePlayer fakePlayer;
     public Player player;
     public String nametag;
     public long lastHurt;
-    public int combatVL=0,movementVL=0,worldVL=0,miscVL=0;
-    public boolean warn=false;
+    public int combatVL = 0, movementVL = 0, worldVL = 0, miscVL = 0;
+    public boolean warn = false;
     public long lastTPTime;
     //fast place check
-    public long lastPlace=0L;
+    public long lastPlace = 0L;
     //aimbot check
-    public int lastRot=0,sameRot=0;
+    public int lastRot = 0, sameRot = 0;
     //noswing check
-    public long lastSwing=0;
+    public long lastSwing = 0;
     //timer check
     public long lastMovePacket;
-    public double packetBalance=0;
+    public double packetBalance = 0;
 
-    public CheckCache(Player player){
-        long timeNow=System.currentTimeMillis();
+    public CheckCache(Player player) {
+        long timeNow = System.currentTimeMillis();
 
-        checkCacheMap.put(player.getUniqueId(),this);
-        this.player=player;
-        lastHurt=new Date().getTime();
-        nametag=player.getNameTag();
-        if(AnticheatManager.canCheckPlayer(player,CheckType.KA_BOT)) {
+        checkCacheMap.put(player.getUniqueId(), this);
+        movementCache = new MovementCache();
+        this.player = player;
+        lastHurt = new Date().getTime();
+        nametag = player.getNameTag();
+        if (AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
             fakePlayer = FakePlayerManager.spawnFake(player);
         }
-        lastTPTime=timeNow;
-        lastMovePacket=timeNow;
+        lastTPTime = timeNow;
+        lastMovePacket = timeNow;
     }
-    public static CheckCache get(Player player){
+
+    public static CheckCache get(Player player) {
         return get(player.getUniqueId());
     }
-    public static CheckCache get(UUID uuid){
+
+    public static CheckCache get(UUID uuid) {
         return checkCacheMap.get(uuid);
     }
-    public static void remove(Player player){
+
+    public static void remove(Player player) {
         remove(player.getUniqueId());
     }
-    public static void remove(UUID uuid){
+
+    public static void remove(UUID uuid) {
         checkCacheMap.remove(uuid);
     }
 }

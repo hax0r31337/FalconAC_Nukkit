@@ -17,9 +17,10 @@ public class CriticalsCheck {
         }
         return CheckResult.PASSED;
     }
+
     private static boolean isCritical(Player player) {
         return !player.isOnGround() && !player.hasEffect(Effect.BLINDNESS)
-                && !LocationUtils.isHoveringOverWater(player.getLocation(),25)
+                && !LocationUtils.isHoveringOverWater(player.getLocation(), 25)
                 && !player.getLocation().getLevelBlock().canBeClimbed();
     }
 }

@@ -10,25 +10,25 @@ import java.util.UUID;
 public class MinusVL implements Runnable {
     @Override
     public void run() {
-        while (true){
+        while (true) {
             try {
                 Thread.sleep(1000);
-                for(Map.Entry<UUID, Player> entry: Server.getInstance().getOnlinePlayers().entrySet()){
-                    CheckCache checkCache=CheckCache.get(entry.getValue());
-                    if(checkCache==null){
+                for (Map.Entry<UUID, Player> entry : Server.getInstance().getOnlinePlayers().entrySet()) {
+                    CheckCache checkCache = CheckCache.get(entry.getValue());
+                    if (checkCache == null) {
                         continue;
                     }
-                    if(checkCache.combatVL>0){
-                        checkCache.combatVL-=CheckCategory.COMBAT.minusVl;
+                    if (checkCache.combatVL > 0) {
+                        checkCache.combatVL -= CheckCategory.COMBAT.minusVl;
                     }
-                    if(checkCache.movementVL>0){
-                        checkCache.movementVL-=CheckCategory.MOVEMENT.minusVl;
+                    if (checkCache.movementVL > 0) {
+                        checkCache.movementVL -= CheckCategory.MOVEMENT.minusVl;
                     }
-                    if(checkCache.worldVL>0){
-                        checkCache.worldVL-=CheckCategory.WORLD.minusVl;
+                    if (checkCache.worldVL > 0) {
+                        checkCache.worldVL -= CheckCategory.WORLD.minusVl;
                     }
-                    if(checkCache.miscVL>0){
-                        checkCache.miscVL-=CheckCategory.MISC.minusVl;
+                    if (checkCache.miscVL > 0) {
+                        checkCache.miscVL -= CheckCategory.MISC.minusVl;
                     }
                 }
             } catch (Throwable e) {

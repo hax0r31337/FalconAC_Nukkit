@@ -22,8 +22,9 @@ public class KillauraCheck {
         }
         return CheckResult.PASSED;
     }
+
     public static CheckResult checkReach(Player player, Entity target) {
-        float allowedReach=player.gamemode!=1?CheckType.KILLAURA.otherData.getFloat("reach-common"):CheckType.KILLAURA.otherData.getFloat("reach-creative");
+        float allowedReach = player.gamemode != 1 ? CheckType.KILLAURA.otherData.getFloat("reach-common") : CheckType.KILLAURA.otherData.getFloat("reach-creative");
         if (player.gamemode == 1)
             allowedReach += 1.5D;
         allowedReach += player.getPing() * CheckType.KILLAURA.otherData.getFloat("reach-ping");
@@ -36,9 +37,10 @@ public class KillauraCheck {
             return new CheckResult("reached too far (distance=" + reachedDistance + ", max=" + allowedReach + ")");
         return CheckResult.PASSED;
     }
+
     public static double calculateYawDifference(Location from, Location to) {
         Location clonedFrom = from.clone();
-        Vector3f vector=new Vector3f((float)(to.x-clonedFrom.x),(float)(to.y-clonedFrom.y),(float)(to.z-clonedFrom.z));
-        return LocationUtils.setDirection(vector,clonedFrom).getYaw();
+        Vector3f vector = new Vector3f((float) (to.x - clonedFrom.x), (float) (to.y - clonedFrom.y), (float) (to.z - clonedFrom.z));
+        return LocationUtils.setDirection(vector, clonedFrom).getYaw();
     }
 }
