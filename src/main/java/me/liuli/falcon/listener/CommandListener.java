@@ -1,19 +1,19 @@
-package me.liuli.falcon.manager;
+package me.liuli.falcon.listener;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import me.liuli.falcon.cache.Configuration;
+import me.liuli.falcon.manager.BanManager;
 import me.liuli.falcon.utils.OtherUtils;
 
-public class FalconCommand extends Command {
+public class CommandListener extends Command {
     private static String versionStr;
 
-    public FalconCommand(String version) {
+    public CommandListener(String version) {
         super("falcon", "Command For FalconAC");
         versionStr = ("Current running &6&lFalcon&bAC &fv&7" + version).replaceAll("&", "§");
-        ;
     }
 
     @Override

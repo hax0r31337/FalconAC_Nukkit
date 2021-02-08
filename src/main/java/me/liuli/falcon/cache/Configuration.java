@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class Configuration {
     public static boolean checkOp, consoleDebug, playerDebug, flag, punishBoardcast;
+    public static JSONObject globalValues;
     public static int ban;
     private static JSONObject configJSON, langJSON;
 
@@ -69,6 +70,8 @@ public class Configuration {
         //misc
         loadType(CheckType.NOSWING, moduleJSON.getJSONObject("noswing"));
         loadType(CheckType.BADPACKETS, moduleJSON.getJSONObject("badpackets"));
+
+        globalValues=configJSON.getJSONObject("global");
     }
 
     private static void loadCategory(CheckCategory category, JSONObject data) {

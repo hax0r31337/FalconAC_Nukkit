@@ -5,6 +5,7 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityMotionEvent;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.combat.CriticalsCheck;
@@ -55,6 +56,19 @@ public class EntityListener implements Listener {
                 event.setCancelled();
             } else {
                 AnticheatManager.minusPassVl(player, CheckCategory.COMBAT);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityMotion(EntityMotionEvent event) {
+        if(event.getEntity() instanceof Player){
+            Player player= (Player) event.getEntity();
+
+            CheckCache cache = CheckCache.get(player);
+            if(cache!=null){
+                cache.logVelocity();
+                cache.movementCache.velocityExpectedMotionY = event.getMotion().getY();
             }
         }
     }

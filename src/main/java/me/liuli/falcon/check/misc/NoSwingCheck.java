@@ -32,7 +32,7 @@ public class NoSwingCheck {
         CheckCache cache = CheckCache.get(player);
 
         if ((System.currentTimeMillis() - cache.lastSwing) > CheckType.NOSWING.otherData.getInteger("swing")) {
-            return new CheckResult("Attack a entity without swing");
+            return new CheckResult("Attack a entity without swing(last="+cache.lastSwing+")");
         }
         return CheckResult.PASSED;
     }

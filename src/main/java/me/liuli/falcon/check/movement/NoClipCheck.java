@@ -3,12 +3,16 @@ package me.liuli.falcon.check.movement;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.player.PlayerMoveEvent;
+import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.UpdateBlockPacket;
 import me.liuli.falcon.manager.CheckResult;
+import me.liuli.falcon.manager.CheckType;
 
 import java.util.ArrayList;
 
@@ -35,6 +39,17 @@ public class NoClipCheck {
                         packet.dataLayer = 0;
                         packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
                         player.dataPacket(packet);
+
+                        if(CheckType.NOCLIP.otherData.getBoolean("smartFlag")){
+                            Location from=event.getFrom();
+                            for(int i = (int) from.y+2; i<255; i++){
+                                Position pos=Position.fromObject(new Vector3(from.x,i, from.z),from.level);
+                                if(pos.getLevelBlock().getId()==Block.AIR){
+                                    player.teleport(pos, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                                    return new CheckResult("Trying to move into " + block.getName());
+                                }
+                            }
+                        }
 
                         return new CheckResult("Trying to move into " + block.getName());
                     }

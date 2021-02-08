@@ -18,7 +18,7 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        if (cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
@@ -31,11 +31,11 @@ public class SpeedCheck {
         if (movementCache.airTicks > 1 && movementCache.elytraEffectTicks <= 0 &&
                 !MoveUtils.isNearBlock(player,Block.LADDER)) {
             double multiplier = 0.985D;
-            double predict = 0.36 * Math.pow(multiplier, movementCache.airTicks + 1);
+            double predict = 0.4 * Math.pow(multiplier, movementCache.airTicks + 1);
             // Prevents false when falling from great heights
             if (movementCache.airTicks >= 115)
                 predict = Math.max(0.08, predict);
-            double limit = CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("baseLimit"); // Default 0.03125
+            double limit = CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("baseLimit");
             // Adjust for ice
             if (movementCache.iceInfluenceTicks > 0) {
                 double iceIncrement = 0.025 * Math.pow(1.038, movementCache.iceInfluenceTicks);
@@ -90,7 +90,7 @@ public class SpeedCheck {
                     && movementCache.motionY < -0.18 && movementCache.motionY > -0.182)
                 predict += Math.abs(movementCache.motionY);
 
-            if (distanceXZ - predict > limit) {
+            if ((distanceXZ - predict) > limit) {
                 return new CheckResult("moved too fast in air (speed=" + distanceXZ + ", limit=" + predict
                         + ", box=" + boxedIn + ", at=" + movementCache.airTicks + ")");
             }
@@ -202,6 +202,7 @@ public class SpeedCheck {
 
         if (player.hasEffect(Effect.JUMP))
             base += player.getEffect(Effect.JUMP).getAmplifier() * 0.2D;
+
         return base;
     }
 }

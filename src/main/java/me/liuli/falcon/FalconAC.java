@@ -7,14 +7,14 @@ import me.liuli.falcon.listener.EntityListener;
 import me.liuli.falcon.listener.PacketListener;
 import me.liuli.falcon.listener.PlayerListener;
 import me.liuli.falcon.manager.BanManager;
-import me.liuli.falcon.manager.FalconCommand;
+import me.liuli.falcon.listener.CommandListener;
 import me.liuli.falcon.manager.MinusVL;
 
 import java.io.File;
 
 public class FalconAC extends PluginBase {
     public static FalconAC plugin;
-    public static int CONFIG_VERSION = 1;
+    public static int CONFIG_VERSION = 2;
     private static Thread minusVLThread;
 
     @Override
@@ -41,7 +41,7 @@ public class FalconAC extends PluginBase {
         getServer().getPluginManager().registerEvents(new PacketListener(), this);
 
         //register command
-        plugin.getServer().getCommandMap().register("falcon", new FalconCommand(plugin.getDescription().getVersion()));
+        plugin.getServer().getCommandMap().register("falcon", new CommandListener(plugin.getDescription().getVersion()));
 
         //done
         plugin.getLogger().info("§l§6Falcon§bAC §rLOADED!");

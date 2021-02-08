@@ -7,6 +7,9 @@ debug:
 flag: true
 ban: 1440 #minutes,-1 for forever
 punish-boardcast: true
+global:
+  # Time a player is considered to have a change in velocity
+  velocity: 2000
 checks:
   combat:
     vl: 500
@@ -87,7 +90,8 @@ modules:
     lungeMinimumDistXZ: 0.098
   noclip:
     enable: true
-    vl: 15
+    vl: 50
+    smartFlag: true
   illegalinteract:
     enable: true
     vl: 10
@@ -116,7 +120,7 @@ modules:
   noswing:
     enable: true
     vl: 10
-    swing: 200 # Maximum delay of swing and attack(ms)
+    swing: 300 # Maximum delay of swing and attack(ms)
   badpackets:
     enable: true
     vl: 20

@@ -4,6 +4,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.entity.EntityMotionEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.level.Location;
 import me.liuli.falcon.cache.CheckCache;
