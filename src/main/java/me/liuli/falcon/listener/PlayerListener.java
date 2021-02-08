@@ -51,11 +51,13 @@ public class PlayerListener implements Listener {
                 }
             }
         }
-        if (shouldFlag && Configuration.flag) {
-            event.setCancelled();
-        } else {
-            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
+        if (shouldFlag) {
+            if(Configuration.flag) {
+                event.setCancelled();
+            }
+            return;
         }
+        AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -63,53 +65,17 @@ public class PlayerListener implements Listener {
         if (event == null) {
             return;
         }
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        Distance distance = new Distance(from, to);
-        CheckCache.get(event.getPlayer()).movementCache.handle(event.getPlayer(), from, to, distance);
-
-        double x = distance.getXDifference();
-        double z = distance.getZDifference();
 
         boolean shouldFlag = false;
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.AIMBOT)) {
-            CheckResult result = AimbotCheck.check(event.getPlayer(), event);
+            CheckResult result = AimbotCheck.check(event.getPlayer(), event.getFrom(),event.getTo());
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.AIMBOT, result);
             }
         }
-        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.NOCLIP)) {
-            CheckResult result = NoClipCheck.check(event.getPlayer(), event);
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.NOCLIP, result);
-            }
-        }
-        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.SPEED)) {
-            CheckResult result = SpeedCheck.checkVerticalSpeed(event.getPlayer(), distance);
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.SPEED, result);
-            }
-            result = SpeedCheck.checkXZSpeed(event.getPlayer(), x,z,event.getTo());
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.SPEED, result);
-            }
-        }
-        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.STRAFE)) {
-            CheckResult result = StrafeCheck.runCheck(event.getPlayer(), x,z, event.getFrom(), event.getTo());
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.STRAFE, result);
-            }
-        }
-        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.WATER_WALK)) {
-            CheckResult result = WaterWalkCheck.runCheck(event.getPlayer(), x, distance.getYDifference(), z);
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.WATER_WALK, result);
-            }
-        }
-        if (shouldFlag && Configuration.flag) {
+
+        if (shouldFlag&&Configuration.flag) {
             event.setCancelled();
-        } else {
-            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.MOVEMENT);
         }
     }
 

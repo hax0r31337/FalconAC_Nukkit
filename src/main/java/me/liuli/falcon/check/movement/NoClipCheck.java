@@ -2,8 +2,6 @@ package me.liuli.falcon.check.movement;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.event.player.PlayerMoveEvent;
-import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
@@ -17,42 +15,39 @@ import me.liuli.falcon.manager.CheckType;
 import java.util.ArrayList;
 
 public class NoClipCheck {
-    public static CheckResult check(Player player, PlayerMoveEvent event) {
-        if (!event.isCancelled()) {
-            AxisAlignedBB newBB = player.getBoundingBox();
+    public static CheckResult check(Player player,Location from) {
+        AxisAlignedBB newBB = player.getBoundingBox();
 
-            AxisAlignedBB bb2 = newBB.clone();
-            bb2.expand(-0.2, -0.2, -0.2);
+        AxisAlignedBB bb2 = newBB.clone();
+        bb2.expand(-0.2, -0.2, -0.2);
 
-            ArrayList<Block> blocksAround = getBlocksAround(player.level, newBB);
-            ArrayList<Block> collidingBlocks = getCollisionBlocks(blocksAround, newBB);
+        ArrayList<Block> blocksAround = getBlocksAround(player.level, newBB);
+        ArrayList<Block> collidingBlocks = getCollisionBlocks(blocksAround, newBB);
 
-            for (Block block : collidingBlocks) {
-                if (!block.canPassThrough()) {
-                    AxisAlignedBB bb = block.getBoundingBox();
-                    if (bb != null && bb.getMaxY() - newBB.getMinY() >= 0.6 && block.collidesWithBB(bb2)) {
-                        //update block for lagging player
-                        UpdateBlockPacket packet = new UpdateBlockPacket();
-                        packet.x = block.getFloorX();
-                        packet.y = block.getFloorY();
-                        packet.z = block.getFloorZ();
-                        packet.dataLayer = 0;
-                        packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
-                        player.dataPacket(packet);
+        for (Block block : collidingBlocks) {
+            if (!block.canPassThrough()) {
+                AxisAlignedBB bb = block.getBoundingBox();
+                if (bb != null && bb.getMaxY() - newBB.getMinY() >= 0.6 && block.collidesWithBB(bb2)) {
+                    //update block for lagging player
+                    UpdateBlockPacket packet = new UpdateBlockPacket();
+                    packet.x = block.getFloorX();
+                    packet.y = block.getFloorY();
+                    packet.z = block.getFloorZ();
+                    packet.dataLayer = 0;
+                    packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
+                    player.dataPacket(packet);
 
-                        if(CheckType.NOCLIP.otherData.getBoolean("smartFlag")){
-                            Location from=event.getFrom();
-                            for(int i = (int) from.y+2; i<255; i++){
-                                Position pos=Position.fromObject(new Vector3(from.x,i, from.z),from.level);
-                                if(pos.getLevelBlock().getId()==Block.AIR){
-                                    player.teleport(pos, PlayerTeleportEvent.TeleportCause.PLUGIN);
-                                    return new CheckResult("Trying to move into " + block.getName());
-                                }
+                    if(CheckType.NOCLIP.otherData.getBoolean("smartFlag")){
+                        for(int i = (int) from.y+2; i<255; i++){
+                            Position pos=Position.fromObject(new Vector3(from.x,i, from.z),from.level);
+                            if(pos.getLevelBlock().getId()==Block.AIR){
+                                player.teleport(pos);
+                                return new CheckResult("Trying to move into " + block.getName());
                             }
                         }
-
-                        return new CheckResult("Trying to move into " + block.getName());
                     }
+
+                    return new CheckResult("Trying to move into " + block.getName());
                 }
             }
         }

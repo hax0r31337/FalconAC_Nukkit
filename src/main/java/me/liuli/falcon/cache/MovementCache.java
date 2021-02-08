@@ -93,8 +93,8 @@ public class MovementCache {
     // Time of last update
     public long lastUpdate;
 
-    public void handle(Player player, Location from, Location to, Distance distance) {
-        this.onGround = player.isOnGround();
+    public void handle(Player player, Location from, Location to, Distance distance,boolean onGround) {
+        this.onGround = onGround;
 
         double x = distance.getXDifference();
         double z = distance.getZDifference();

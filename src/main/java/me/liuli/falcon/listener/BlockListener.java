@@ -33,11 +33,13 @@ public class BlockListener implements Listener {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.FAST_PLACE, result);
             }
         }
-        if (shouldFlag && Configuration.flag) {
-            event.setCancelled();
-        } else {
-            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
+        if (shouldFlag) {
+            if(Configuration.flag) {
+                event.setCancelled();
+            }
+            return;
         }
+        AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -53,10 +55,12 @@ public class BlockListener implements Listener {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT, result);
             }
         }
-        if (shouldFlag && Configuration.flag) {
-            event.setCancelled();
-        } else {
-            AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
+        if (shouldFlag) {
+            if(Configuration.flag) {
+                event.setCancelled();
+            }
+            return;
         }
+        AnticheatManager.minusPassVl(event.getPlayer(), CheckCategory.WORLD);
     }
 }

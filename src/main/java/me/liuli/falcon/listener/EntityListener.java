@@ -52,11 +52,13 @@ public class EntityListener implements Listener {
             if (AnticheatManager.canCheckPlayer(player, CheckType.NOSWING)) {
                 NoSwingCheck.check(player);
             }
-            if (shouldFlag && Configuration.flag) {
-                event.setCancelled();
-            } else {
-                AnticheatManager.minusPassVl(player, CheckCategory.COMBAT);
+            if (shouldFlag) {
+                if(Configuration.flag) {
+                    event.setCancelled();
+                }
+                return;
             }
+            AnticheatManager.minusPassVl(player, CheckCategory.COMBAT);
         }
     }
 
