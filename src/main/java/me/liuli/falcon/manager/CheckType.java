@@ -8,6 +8,7 @@ public enum CheckType {
     AIMBOT(CheckCategory.COMBAT),
     CRITICALS(CheckCategory.COMBAT),
     SPEED(CheckCategory.MOVEMENT),
+    FLIGHT(CheckCategory.MOVEMENT),
     STRAFE(CheckCategory.MOVEMENT),
     WATER_WALK(CheckCategory.MOVEMENT),
     NOCLIP(CheckCategory.MOVEMENT),

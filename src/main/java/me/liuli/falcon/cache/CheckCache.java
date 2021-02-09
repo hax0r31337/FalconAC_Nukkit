@@ -21,6 +21,7 @@ public class CheckCache {
     public int combatVL = 0, movementVL = 0, worldVL = 0, miscVL = 0;
     public boolean warn = false;
     public long lastTPTime;
+    public long lastPacketFlag;
     //global
     public long velocityTime;
     //fast place check
@@ -47,6 +48,7 @@ public class CheckCache {
         lastTPTime = timeNow;
         lastMovePacket = timeNow;
         velocityTime = timeNow;
+        lastPacketFlag = timeNow;
     }
 
     public boolean inVelocity(){

@@ -1,5 +1,6 @@
 package me.liuli.falcon.listener;
 
+import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -66,22 +67,33 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        Player player=event.getPlayer();
+        CheckCache checkCache=CheckCache.get(player);
+        if(checkCache==null) {
+            return;
+        }
+
         boolean shouldFlag = false;
-        if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.AIMBOT)) {
-            CheckResult result = AimbotCheck.check(event.getPlayer(), event.getFrom(),event.getTo());
+
+        if (AnticheatManager.canCheckPlayer(player, CheckType.AIMBOT)) {
+            CheckResult result = AimbotCheck.check(player, event.getFrom(),event.getTo());
             if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.AIMBOT, result);
+                shouldFlag = AnticheatManager.addVL(player, CheckType.AIMBOT, result);
+            }
+        }
+        if (AnticheatManager.canCheckPlayer(player, CheckType.NOCLIP)) {
+            CheckResult result = NoClipCheck.check(player,event.getFrom());
+            if (result.failed()) {
+                shouldFlag = AnticheatManager.addVL(player, CheckType.NOCLIP, result);
             }
         }
 
         if (shouldFlag&&Configuration.flag) {
             event.setCancelled();
         }
-    }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
-        CheckCache cache = CheckCache.get(event.getPlayer());
-        cache.lastTPTime = System.currentTimeMillis();
+        if((System.currentTimeMillis()-checkCache.lastPacketFlag)>100){
+            AnticheatManager.minusPassVl(player, CheckCategory.MOVEMENT);
+        }
     }
 }

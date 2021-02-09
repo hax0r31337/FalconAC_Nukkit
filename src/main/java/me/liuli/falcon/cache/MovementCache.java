@@ -72,8 +72,6 @@ public class MovementCache {
     public boolean onGround;
     // Ticks counter for last halfMovement
     public int halfMovementHistoryCounter = 0;
-    // Time of last teleport
-    public long lastTeleport;
     // Elytra effect ticks
     public int elytraEffectTicks;
     // Used by Velocity check, represents the currently expected Y motion

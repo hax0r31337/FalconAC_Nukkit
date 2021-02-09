@@ -60,6 +60,7 @@ public class Configuration {
         loadType(CheckType.CRITICALS, moduleJSON.getJSONObject("criticals"));
         //movement
         loadType(CheckType.SPEED, moduleJSON.getJSONObject("speed"));
+        loadType(CheckType.FLIGHT, moduleJSON.getJSONObject("flight"));
         loadType(CheckType.STRAFE, moduleJSON.getJSONObject("strafe"));
         loadType(CheckType.WATER_WALK, moduleJSON.getJSONObject("waterwalk"));
         loadType(CheckType.NOCLIP, moduleJSON.getJSONObject("noclip"));

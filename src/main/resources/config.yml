@@ -63,8 +63,7 @@ modules:
   speed:
     enable: true
     vl: 15
-    # Checks movement speed in the air
-    # Debugs as 'moved too fast in air'
+    accountForTeleports: 100
     airSpeed:
       # Base unadjusted air speed limit
       baseLimit: 0.03125
@@ -76,6 +75,12 @@ modules:
     groundInitialLimit: 0.34
     # Extra compensation when moving off a ladder up a slab
     verticalCompensation: 0.04
+  flight:
+    enable: true
+    vl: 15
+    gravity:
+      maxOffset: 0.005
+      friction: 0.9800000190734863
   strafe:
     enable: true
     vl: 30

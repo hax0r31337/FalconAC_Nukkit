@@ -14,14 +14,10 @@ import cn.nukkit.network.protocol.MovePlayerPacket;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.cache.Distance;
-import me.liuli.falcon.check.combat.AimbotCheck;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayerManager;
 import me.liuli.falcon.check.misc.BadPacketsCheck;
 import me.liuli.falcon.check.misc.NoSwingCheck;
-import me.liuli.falcon.check.movement.NoClipCheck;
-import me.liuli.falcon.check.movement.SpeedCheck;
-import me.liuli.falcon.check.movement.StrafeCheck;
-import me.liuli.falcon.check.movement.WaterWalkCheck;
+import me.liuli.falcon.check.movement.*;
 import me.liuli.falcon.check.world.TimerCheck;
 import me.liuli.falcon.manager.AnticheatManager;
 import me.liuli.falcon.manager.CheckCategory;
@@ -77,10 +73,20 @@ public class PacketListener implements Listener {
         if (event.getPlayer() == null) {
             return;
         }
+
+        Player player=event.getPlayer();
+        CheckCache cache = CheckCache.get(player);
+        if(cache==null)
+            return;
+
         DataPacket packet = event.getPacket();
         if (packet instanceof MovePlayerPacket) {
-            if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.TIMER)) {
-                TimerCheck.compensate(event.getPlayer());
+            MovePlayerPacket movePlayerPacket=(MovePlayerPacket)packet;
+            if(movePlayerPacket.eid == player.getId()) {
+                cache.lastTPTime = System.currentTimeMillis();
+                if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.TIMER)) {
+                    TimerCheck.compensate(event.getPlayer());
+                }
             }
         }
     }
@@ -99,12 +105,6 @@ public class PacketListener implements Listener {
         double z = distance.getZDifference();
 
         boolean shouldFlag = false;
-        if (AnticheatManager.canCheckPlayer(player, CheckType.NOCLIP)) {
-            CheckResult result = NoClipCheck.check(player, from);
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(player, CheckType.NOCLIP, result);
-            }
-        }
         if (AnticheatManager.canCheckPlayer(player, CheckType.SPEED)) {
             CheckResult result = SpeedCheck.checkVerticalSpeed(player, distance);
             if (result.failed()) {
@@ -113,6 +113,12 @@ public class PacketListener implements Listener {
             result = SpeedCheck.checkXZSpeed(player,x,z,to);
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(player, CheckType.SPEED, result);
+            }
+        }
+        if (AnticheatManager.canCheckPlayer(player, CheckType.FLIGHT)) {
+            CheckResult result = FlightCheck.runCheck(player,distance);
+            if (result.failed()) {
+                shouldFlag = AnticheatManager.addVL(player, CheckType.FLIGHT, result);
             }
         }
         if (AnticheatManager.canCheckPlayer(player, CheckType.STRAFE)) {
@@ -127,14 +133,15 @@ public class PacketListener implements Listener {
                 shouldFlag = AnticheatManager.addVL(player, CheckType.WATER_WALK, result);
             }
         }
+
         if (shouldFlag) {
+            checkCache.lastPacketFlag=System.currentTimeMillis();
             if(Configuration.flag) {
                 player.teleport(from);
                 return true;
             }
             return false;
         }
-        AnticheatManager.minusPassVl(player, CheckCategory.MOVEMENT);
         return false;
     }
 }

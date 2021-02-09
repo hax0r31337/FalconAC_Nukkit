@@ -18,7 +18,8 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        if ((System.currentTimeMillis() - cache.lastTPTime <= CheckType.SPEED.otherData.getDouble("accountForTeleports"))
+                || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
@@ -177,7 +178,8 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        if ((System.currentTimeMillis() - cache.lastTPTime <= CheckType.SPEED.otherData.getDouble("accountForTeleports"))
+                || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
