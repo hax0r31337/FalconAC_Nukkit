@@ -4,7 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.potion.Effect;
 import me.liuli.falcon.manager.CheckResult;
-import me.liuli.falcon.utils.LocationUtils;
+import me.liuli.falcon.utils.LocationUtil;
 
 public class CriticalsCheck {
     public static CheckResult doDamageEvent(EntityDamageByEntityEvent event) {
@@ -20,7 +20,7 @@ public class CriticalsCheck {
 
     private static boolean isCritical(Player player) {
         return !player.isOnGround() && !player.hasEffect(Effect.BLINDNESS)
-                && !LocationUtils.isHoveringOverWater(player.getLocation(), 25)
+                && !LocationUtil.isHoveringOverWater(player.getLocation(), 25)
                 && !player.getLocation().getLevelBlock().canBeClimbed();
     }
 }

@@ -20,7 +20,6 @@ import me.liuli.falcon.check.misc.NoSwingCheck;
 import me.liuli.falcon.check.movement.*;
 import me.liuli.falcon.check.world.TimerCheck;
 import me.liuli.falcon.manager.AnticheatManager;
-import me.liuli.falcon.manager.CheckCategory;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 
@@ -83,7 +82,6 @@ public class PacketListener implements Listener {
         if (packet instanceof MovePlayerPacket) {
             MovePlayerPacket movePlayerPacket=(MovePlayerPacket)packet;
             if(movePlayerPacket.eid == player.getId()) {
-                cache.lastTPTime = System.currentTimeMillis();
                 if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.TIMER)) {
                     TimerCheck.compensate(event.getPlayer());
                 }
@@ -100,6 +98,11 @@ public class PacketListener implements Listener {
             return false;
         }
         checkCache.movementCache.handle(player, from, to, distance, packet.onGround);
+
+        if(checkCache.flagDisable){
+            checkCache.flagDisable=false;
+            return false;
+        }
 
         double x = distance.getXDifference();
         double z = distance.getZDifference();
@@ -137,7 +140,27 @@ public class PacketListener implements Listener {
         if (shouldFlag) {
             checkCache.lastPacketFlag=System.currentTimeMillis();
             if(Configuration.flag) {
-                player.teleport(from);
+                //use packet to setback
+                checkCache.flagDisable=true;
+
+                MovePlayerPacket movePlayerPacket=new MovePlayerPacket();
+                movePlayerPacket.eid=player.getId();
+                movePlayerPacket.mode=2;
+                movePlayerPacket.yaw= (float) from.yaw;
+                movePlayerPacket.pitch= (float) from.pitch;
+                movePlayerPacket.x= (float) from.x;
+                movePlayerPacket.y= (float) from.y;
+                movePlayerPacket.z= (float) from.z;
+                movePlayerPacket.onGround=player.onGround;
+                movePlayerPacket.ridingEid=player.getRiding()==null?0:player.getRiding().getId();
+
+                if(!player.getPosition().clone().subtract(0,1.62,0).getLevelBlock().canPassThrough()){
+                    checkCache.teleportTime = System.currentTimeMillis();
+                    movePlayerPacket.y= (float) from.y+0.62F;
+                }
+
+                player.dataPacket(movePlayerPacket);
+
                 return true;
             }
             return false;

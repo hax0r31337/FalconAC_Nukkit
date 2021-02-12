@@ -7,7 +7,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import me.liuli.falcon.other.BlockRelative;
 
-public class MoveUtils {
+public class MoveUtil {
     public static final double JUMP_MOTION_Y = 0.41999998688697815;
 
     public static boolean couldBeOnBlock(Location location,int id) {

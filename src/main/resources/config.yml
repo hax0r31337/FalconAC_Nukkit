@@ -10,6 +10,7 @@ punish-boardcast: true
 global:
   # Time a player is considered to have a change in velocity
   velocity: 2000
+  accountForTeleports: 100
 checks:
   combat:
     vl: 500
@@ -63,11 +64,15 @@ modules:
   speed:
     enable: true
     vl: 15
-    accountForTeleports: 100
     airSpeed:
       # Base unadjusted air speed limit
       baseLimit: 0.03125
       # Prediction multiplier for custom walk speeds
+      walkSpeedMultiplier: 1.4
+    airAcceleration:
+      # Base unadjusted air acceleration limit
+      baseLimit: 0.3725
+      # Limit multiplier for custom walk speeds
       walkSpeedMultiplier: 1.4
     # Minimum movement distance needed to flag
     jumpMinimumDistXZ: 0.42

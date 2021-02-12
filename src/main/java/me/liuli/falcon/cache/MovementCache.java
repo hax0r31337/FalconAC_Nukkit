@@ -22,7 +22,7 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Location;
 import cn.nukkit.potion.Effect;
-import me.liuli.falcon.utils.MoveUtils;
+import me.liuli.falcon.utils.MoveUtil;
 
 public class MovementCache {
 
@@ -116,7 +116,7 @@ public class MovementCache {
             this.groundTicks++;
         }
 
-        if (MoveUtils.couldBeOnBlock(to,Block.ICE)) {
+        if (MoveUtil.couldBeOnBlock(to,Block.ICE)) {
             this.iceTicks++;
             this.iceInfluenceTicks = 60;
         } else {
@@ -125,7 +125,7 @@ public class MovementCache {
                 this.iceInfluenceTicks--;
         }
 
-        if (MoveUtils.couldBeOnBlock(to,Block.SLIME_BLOCK)) {
+        if (MoveUtil.couldBeOnBlock(to,Block.SLIME_BLOCK)) {
             this.slimeTicks++;
             this.slimeInfluenceTicks = 40;
         } else {
@@ -146,7 +146,7 @@ public class MovementCache {
         else
             this.sneakingTicks = 0;
 
-        if (MoveUtils.isNearBlock(player, Block.STILL_WATER))
+        if (MoveUtil.isNearBlock(player, Block.STILL_WATER))
             this.nearLiquidTicks = 8;
         else {
             if (this.nearLiquidTicks > 0)

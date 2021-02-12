@@ -5,7 +5,7 @@ import me.liuli.falcon.FalconAC;
 import me.liuli.falcon.manager.CheckCategory;
 import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.manager.PunishResult;
-import me.liuli.falcon.utils.OtherUtils;
+import me.liuli.falcon.utils.OtherUtil;
 
 import java.io.File;
 import java.util.Map;
@@ -18,9 +18,9 @@ public class Configuration {
 
     public static void loadConfig() {
         if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml").exists()) {
-            OtherUtils.writeFile(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml", OtherUtils.getTextFromResource("lang.yml"));
+            OtherUtil.writeFile(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml", OtherUtil.getTextFromResource("lang.yml"));
         }
-        langJSON = JSONObject.parseObject(OtherUtils.y2j(new File(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml")));
+        langJSON = JSONObject.parseObject(OtherUtil.y2j(new File(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml")));
         LANG.ALERT_PREFIX.setStr(langJSON.getString("ALERT_PREFIX"));
         LANG.WARNING.setStr(langJSON.getString("WARNING"));
         LANG.DEBUG.setStr(langJSON.getString("DEBUG"));
@@ -30,9 +30,9 @@ public class Configuration {
         LANG.BAN_REASON.setStr(langJSON.getString("BAN_REASON"));
 
         if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/config.yml").exists()) {
-            OtherUtils.writeFile(FalconAC.plugin.getDataFolder().getPath() + "/config.yml", OtherUtils.getTextFromResource("config.yml"));
+            OtherUtil.writeFile(FalconAC.plugin.getDataFolder().getPath() + "/config.yml", OtherUtil.getTextFromResource("config.yml"));
         }
-        configJSON = JSONObject.parseObject(OtherUtils.y2j(new File(FalconAC.plugin.getDataFolder().getPath() + "/config.yml")));
+        configJSON = JSONObject.parseObject(OtherUtil.y2j(new File(FalconAC.plugin.getDataFolder().getPath() + "/config.yml")));
         if (configJSON.getInteger("config-version") != FalconAC.CONFIG_VERSION) {
             throw new IllegalArgumentException("WRONG CONFIG VERSION!PLEASE DELETE/UPDATE YOUR CONFIG!");
         }

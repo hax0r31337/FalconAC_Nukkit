@@ -5,7 +5,7 @@ import cn.nukkit.Server;
 import me.liuli.falcon.FalconAC;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
-import me.liuli.falcon.utils.OtherUtils;
+import me.liuli.falcon.utils.OtherUtil;
 
 import java.util.Map;
 import java.util.UUID;
@@ -144,7 +144,7 @@ public class AnticheatManager {
                 if (Configuration.punishBoardcast) {
                     boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
                 }
-                BanManager.addBan(cache.player, OtherUtils.getTime() + (Configuration.ban * 60L));
+                BanManager.addBan(cache.player, OtherUtil.getTime() + (Configuration.ban * 60L));
             }
         }
     }

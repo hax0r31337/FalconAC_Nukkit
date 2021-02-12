@@ -1,6 +1,6 @@
 package me.liuli.falcon.utils;
 
-public class RandUtils {
+public class RandUtil {
     public static boolean RandBool() {
         return Math.random() < 0.5;
     }

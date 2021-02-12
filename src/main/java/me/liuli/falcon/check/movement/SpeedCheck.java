@@ -10,7 +10,7 @@ import me.liuli.falcon.cache.MovementCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.other.BlockRelative;
-import me.liuli.falcon.utils.MoveUtils;
+import me.liuli.falcon.utils.MoveUtil;
 
 public class SpeedCheck {
     public static CheckResult checkXZSpeed(Player player, double x, double z, Location movingTowards) {
@@ -18,19 +18,18 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if ((System.currentTimeMillis() - cache.lastTPTime <= CheckType.SPEED.otherData.getDouble("accountForTeleports"))
-                || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
         double distanceXZ = movementCache.distanceXZ;
         boolean boxedIn = movementCache.topSolid && movementCache.bottomSolid;
 
-        float movementSpeed=player.getMovementSpeed() * 2.5F;
+        float movementSpeed=player.getMovementSpeed() * 2F;
 
         // AirSpeed
         if (movementCache.airTicks > 1 && movementCache.elytraEffectTicks <= 0 &&
-                !MoveUtils.isNearBlock(player,Block.LADDER)) {
+                !MoveUtil.isNearBlock(player,Block.LADDER)) {
             double multiplier = 0.985D;
             double predict = 0.4 * Math.pow(multiplier, movementCache.airTicks + 1);
             // Prevents false when falling from great heights
@@ -45,7 +44,7 @@ public class SpeedCheck {
                     iceIncrement = 0.18D;
                 if (boxedIn)
                     iceIncrement += 0.45D;
-                if (!MoveUtils.couldBeOnBlock(movingTowards,Block.ICE))
+                if (!MoveUtil.couldBeOnBlock(movingTowards,Block.ICE))
                     iceIncrement *= 2.5D;
                 predict += iceIncrement;
             }
@@ -97,6 +96,29 @@ public class SpeedCheck {
             }
         }
 
+        // AirAcceleration
+        if (movementCache.airTicks > 1 && movementCache.iceInfluenceTicks <= 0
+                && movementCache.slimeInfluenceTicks <= 0 && movementCache.elytraEffectTicks <= 0) {
+            double initialAcceleration = movementCache.acceleration;
+            double limit = CheckType.SPEED.otherData.getJSONObject("airAcceleration").getDouble("baseLimit");
+            // Slight increase when boxed in
+            if (boxedIn)
+                limit *= 1.08D;
+            // Adjust for speed effects
+            if (player.hasEffect(Effect.SPEED))
+                limit += player.getEffect(Effect.SPEED).getAmplifier() * 0.0225D;
+            // Adjust for slabs
+            if (movementCache.halfMovementHistoryCounter > 15)
+                limit *= 2.05D;
+            // Adjust for custom walking speed
+            double walkSpeedMultiplier = CheckType.SPEED.otherData.getJSONObject("airAcceleration")
+                    .getDouble("walkSpeedMultiplier");
+            limit += walkSpeedMultiplier * (Math.pow(1.1, ((movementSpeed / 0.20) - 1)) - 1);
+            if (initialAcceleration > limit) {
+                return new CheckResult("exceeded acceleration limits (acceleration=" + initialAcceleration + ", max=" + limit + ")");
+            }
+        }
+
         // JumpBehaviour
         if (movementCache.touchedGroundThisTick && !boxedIn && movementCache.slimeInfluenceTicks <= 10) {
             // This happens naturally
@@ -111,9 +133,7 @@ public class SpeedCheck {
         }
 
         if (movementCache.groundTicks > 1) {
-            double initialLimit = CheckType.SPEED.otherData.getDouble("groundInitialLimit");
-            // 0.34
-            double limit = initialLimit - 0.0055 * Math.min(9, movementCache.groundTicks);
+            double limit = CheckType.SPEED.otherData.getDouble("groundInitialLimit");
             // Leniency when moving back on ground
             if (movementCache.groundTicks < 5)
                 limit += 0.1D;
@@ -139,7 +159,7 @@ public class SpeedCheck {
                 limit *= 1.08D;
             if (movementCache.iceInfluenceTicks >= 50) {
                 // When moving off ice
-                if (!MoveUtils.couldBeOnBlock(movingTowards,Block.ICE))
+                if (!MoveUtil.couldBeOnBlock(movingTowards,Block.ICE))
                     limit *= 2.5D;
                 else {
                     // When boxed in and spamming space for boost
@@ -150,14 +170,14 @@ public class SpeedCheck {
                 }
             }
 
-            if (MoveUtils.isNearBlock(movingTowards,Block.BED_BLOCK)
-                    || MoveUtils.isNearBlock(movingTowards.clone().add(0, -0.5, 0),Block.BED_BLOCK))
+            if (MoveUtil.isNearBlock(movingTowards,Block.BED_BLOCK)
+                    || MoveUtil.isNearBlock(movingTowards.clone().add(0, -0.5, 0),Block.BED_BLOCK))
                 limit *= 2.0D;
             // Adjust for custom walk speed
             limit += (movementSpeed - 0.2) * 2.0D;
             // Prevent NoWeb
             // TODO config
-            if (MoveUtils.isNearBlock(player,Block.COBWEB))
+            if (MoveUtil.isNearBlock(player,Block.COBWEB))
                 limit *= 0.65D;
             // Sneak speed check
             // TODO config
@@ -178,14 +198,13 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if ((System.currentTimeMillis() - cache.lastTPTime <= CheckType.SPEED.otherData.getDouble("accountForTeleports"))
-                || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
 
-        double maxMotionY = getMaxAcceptableMotionY(player, MoveUtils.isNearBlock(distance.getTo(), Block.BED_BLOCK),
-                MoveUtils.isNearBlock(BlockRelative.getRelative(BlockRelative.DOWN, distance.getFrom().getLevelBlock()), Block.LADDER),
+        double maxMotionY = getMaxAcceptableMotionY(player, MoveUtil.isNearBlock(distance.getTo(), Block.BED_BLOCK),
+                MoveUtil.isNearBlock(BlockRelative.getRelative(BlockRelative.DOWN, distance.getFrom().getLevelBlock()), Block.LADDER),
                 movementCache.halfMovement);
 
         if (movementCache.nearLiquidTicks > 6)

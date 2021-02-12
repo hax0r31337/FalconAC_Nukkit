@@ -10,7 +10,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class OtherUtils {
+public class OtherUtil {
     public static String y2j(File file) {
         Config yamlConfig = new Config(file, Config.YAML);
         ConfigSection section = yamlConfig.getRootSection();

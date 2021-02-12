@@ -10,7 +10,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.network.protocol.InventoryTransactionPacket;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
-import me.liuli.falcon.utils.RandUtils;
+import me.liuli.falcon.utils.RandUtil;
 
 import java.util.Date;
 import java.util.Timer;
@@ -88,7 +88,7 @@ public class FakePlayerManager {
 
     public static void updateBot(Player player) {
         Location location = player.getLocation();
-        boolean onGround = RandUtils.RandBool();
+        boolean onGround = RandUtil.RandBool();
         FakePlayer fakePlayer = CheckCache.get(player).fakePlayer;
         String lastNametag = CheckCache.get(player).nametag;
         if (!lastNametag.equals(player.getNameTag())) {
@@ -96,13 +96,13 @@ public class FakePlayerManager {
             fakePlayer.updateNametag(player, player.getNameTag().replaceAll(player.getName(), fakePlayer.name));
         }
         if ((new Date().getTime() - CheckCache.get(player).lastHurt) < 15000) {
-            double rot = location.yaw + RandUtils.RandInt(150, 210), y = location.y + 1.62;
+            double rot = location.yaw + RandUtil.RandInt(150, 210), y = location.y + 1.62;
             if (!onGround) {
-                y += RandUtils.RandDouble(0, 0.5);
+                y += RandUtil.RandDouble(0, 0.5);
             }
-            fakePlayer.moveBot(new Position((location.x - Math.sin(rot * Math.PI / 180) * 2) + RandUtils.RandDouble(-0.5, 0.5), y, (location.z + Math.cos(rot * Math.PI / 180) * 2) + RandUtils.RandDouble(-0.5, 0.5)), onGround, player);
+            fakePlayer.moveBot(new Position((location.x - Math.sin(rot * Math.PI / 180) * 2) + RandUtil.RandDouble(-0.5, 0.5), y, (location.z + Math.cos(rot * Math.PI / 180) * 2) + RandUtil.RandDouble(-0.5, 0.5)), onGround, player);
         } else {
-            fakePlayer.moveBot(new Position(location.x, RandUtils.RandDouble(250, 252), location.z), false, player);
+            fakePlayer.moveBot(new Position(location.x, RandUtil.RandDouble(250, 252), location.z), false, player);
         }
         if (fakePlayer.health < 5) {
             fakePlayer.health = 20;
@@ -110,32 +110,32 @@ public class FakePlayerManager {
     }
 
     private static void equipGen(FakePlayer fakePlayer) {
-        if (RandUtils.RandBool()) {
-            fakePlayer.handEquip = new Item(RandUtils.RandInt(265, 293));
+        if (RandUtil.RandBool()) {
+            fakePlayer.handEquip = new Item(RandUtil.RandInt(265, 293));
         } else {
             fakePlayer.handEquip = new Item(0, 0);
         }
-        fakePlayer.headEquip = heads[RandUtils.RandInt(0, heads.length - 1)];
-        if (RandUtils.RandBool()) {
-            fakePlayer.headEquip.addEnchantment(enchantments[RandUtils.RandInt(0, enchantments.length - 1)]);
+        fakePlayer.headEquip = heads[RandUtil.RandInt(0, heads.length - 1)];
+        if (RandUtil.RandBool()) {
+            fakePlayer.headEquip.addEnchantment(enchantments[RandUtil.RandInt(0, enchantments.length - 1)]);
         }
-        fakePlayer.chestEquip = chests[RandUtils.RandInt(0, chests.length - 1)];
-        if (RandUtils.RandBool()) {
-            fakePlayer.chestEquip.addEnchantment(enchantments[RandUtils.RandInt(0, enchantments.length - 1)]);
+        fakePlayer.chestEquip = chests[RandUtil.RandInt(0, chests.length - 1)];
+        if (RandUtil.RandBool()) {
+            fakePlayer.chestEquip.addEnchantment(enchantments[RandUtil.RandInt(0, enchantments.length - 1)]);
         }
-        fakePlayer.legEquip = legs[RandUtils.RandInt(0, legs.length - 1)];
-        if (RandUtils.RandBool()) {
-            fakePlayer.legEquip.addEnchantment(enchantments[RandUtils.RandInt(0, enchantments.length - 1)]);
+        fakePlayer.legEquip = legs[RandUtil.RandInt(0, legs.length - 1)];
+        if (RandUtil.RandBool()) {
+            fakePlayer.legEquip.addEnchantment(enchantments[RandUtil.RandInt(0, enchantments.length - 1)]);
         }
-        fakePlayer.bootEquip = boots[RandUtils.RandInt(0, boots.length - 1)];
-        if (RandUtils.RandBool()) {
-            fakePlayer.bootEquip.addEnchantment(enchantments[RandUtils.RandInt(0, enchantments.length - 1)]);
+        fakePlayer.bootEquip = boots[RandUtil.RandInt(0, boots.length - 1)];
+        if (RandUtil.RandBool()) {
+            fakePlayer.bootEquip.addEnchantment(enchantments[RandUtil.RandInt(0, enchantments.length - 1)]);
         }
     }
 
     private static String nameGen() {
-        String name = nameBase[RandUtils.RandInt(0, nameBase.length - 1)];
-        name += RandUtils.RandInt(0, 999);
+        String name = nameBase[RandUtil.RandInt(0, nameBase.length - 1)];
+        name += RandUtil.RandInt(0, 999);
         return name;
     }
 }

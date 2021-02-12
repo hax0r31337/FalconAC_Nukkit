@@ -22,10 +22,6 @@ public class BlockListener implements Listener {
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT, result);
             }
-            result = IllegalInteractCheck.rayTraceCheck(event.getPlayer(), event.getBlock());
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT, result);
-            }
         }
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.FAST_PLACE)) {
             CheckResult result = FastPlaceCheck.check(event.getPlayer());
@@ -47,10 +43,6 @@ public class BlockListener implements Listener {
         boolean shouldFlag = false;
         if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.ILLEGAL_INTERACT)) {
             CheckResult result = IllegalInteractCheck.isValidTarget(event.getPlayer(), event.getBlock());
-            if (result.failed()) {
-                shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT, result);
-            }
-            result = IllegalInteractCheck.rayTraceCheck(event.getPlayer(), event.getBlock());
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(event.getPlayer(), CheckType.ILLEGAL_INTERACT, result);
             }

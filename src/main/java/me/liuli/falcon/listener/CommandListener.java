@@ -6,7 +6,7 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.manager.BanManager;
-import me.liuli.falcon.utils.OtherUtils;
+import me.liuli.falcon.utils.OtherUtil;
 
 public class CommandListener extends Command {
     private static String versionStr;
@@ -29,9 +29,9 @@ public class CommandListener extends Command {
                     sender.sendMessage(Configuration.LANG.ALERT_PREFIX.proc() + "Cannot found player");
                     return false;
                 }
-                long banTime = OtherUtils.getTime() + (Configuration.ban * 60L);
+                long banTime = OtherUtil.getTime() + (Configuration.ban * 60L);
                 if (args.length == 3) {
-                    banTime = OtherUtils.getTime() + new Long(args[2]);
+                    banTime = OtherUtil.getTime() + new Long(args[2]);
                 }
                 BanManager.addBan(player, banTime);
                 break;

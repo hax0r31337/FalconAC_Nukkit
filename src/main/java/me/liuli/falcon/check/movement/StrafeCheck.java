@@ -8,8 +8,8 @@ import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.MovementCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
-import me.liuli.falcon.utils.MoveUtils;
-import me.liuli.falcon.utils.OtherUtils;
+import me.liuli.falcon.utils.MoveUtil;
+import me.liuli.falcon.utils.OtherUtil;
 
 public class StrafeCheck {
     public static CheckResult runCheck(Player player, double x, double z, Location from, Location to) {
@@ -17,7 +17,7 @@ public class StrafeCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (MoveUtils.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight() || !player.isAlive())
+        if (MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight() || !player.isAlive())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
@@ -29,7 +29,7 @@ public class StrafeCheck {
         Vector3 oldAcceleration = new Vector3(movementCache.lastDistanceX, 0, movementCache.lastDistanceZ);
         Vector3 newAcceleration = new Vector3(x, 0, z);
 
-        float angle = OtherUtils.angle(newAcceleration, oldAcceleration);
+        float angle = OtherUtil.angle(newAcceleration, oldAcceleration);
         double distance = newAcceleration.lengthSquared();
         if (angle > CheckType.STRAFE.otherData.getDouble("maxAngleChange")
                 && distance > CheckType.STRAFE.otherData.getDouble("minActivationDistance")

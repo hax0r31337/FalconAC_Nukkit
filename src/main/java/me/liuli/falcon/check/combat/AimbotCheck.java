@@ -14,7 +14,7 @@ public class AimbotCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if ((System.currentTimeMillis() - cache.lastTPTime) < 1000) return CheckResult.PASSED;
+        if ((System.currentTimeMillis() - cache.teleportTime) < 1000) return CheckResult.PASSED;
         int maxRot = CheckType.AIMBOT.otherData.getInteger("maxRotate");
         int smoothMin = CheckType.AIMBOT.otherData.getInteger("smoothMin");
         int smoothSame = CheckType.AIMBOT.otherData.getInteger("smoothSame");

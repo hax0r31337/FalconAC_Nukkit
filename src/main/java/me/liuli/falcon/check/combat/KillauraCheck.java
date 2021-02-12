@@ -7,7 +7,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3f;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
-import me.liuli.falcon.utils.LocationUtils;
+import me.liuli.falcon.utils.LocationUtil;
 
 public class KillauraCheck {
     public static CheckResult checkAngle(Player player, EntityDamageByEntityEvent event) {
@@ -41,6 +41,6 @@ public class KillauraCheck {
     public static double calculateYawDifference(Location from, Location to) {
         Location clonedFrom = from.clone();
         Vector3f vector = new Vector3f((float) (to.x - clonedFrom.x), (float) (to.y - clonedFrom.y), (float) (to.z - clonedFrom.z));
-        return LocationUtils.setDirection(vector, clonedFrom).getYaw();
+        return LocationUtil.setDirection(vector, clonedFrom).getYaw();
     }
 }

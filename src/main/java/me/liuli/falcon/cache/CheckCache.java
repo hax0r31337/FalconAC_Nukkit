@@ -20,16 +20,17 @@ public class CheckCache {
     public long lastHurt;
     public int combatVL = 0, movementVL = 0, worldVL = 0, miscVL = 0;
     public boolean warn = false;
-    public long lastTPTime;
+    public boolean flagDisable = false;
+    public long teleportTime;
     public long lastPacketFlag;
     //global
     public long velocityTime;
     //fast place check
-    public long lastPlace = 0L;
+    public long lastPlace;
     //aimbot check
     public int lastRot = 0, sameRot = 0;
     //noswing check
-    public long lastSwing = 0;
+    public long lastSwing;
     //timer check
     public long lastMovePacket;
     public double packetBalance = 0;
@@ -45,10 +46,12 @@ public class CheckCache {
         if (AnticheatManager.canCheckPlayer(player, CheckType.KA_BOT)) {
             fakePlayer = FakePlayerManager.spawnFake(player);
         }
-        lastTPTime = timeNow;
+        teleportTime = timeNow;
         lastMovePacket = timeNow;
         velocityTime = timeNow;
         lastPacketFlag = timeNow;
+        lastPlace = timeNow;
+        lastSwing = timeNow;
     }
 
     public boolean inVelocity(){
@@ -57,6 +60,10 @@ public class CheckCache {
 
     public void logVelocity(){
         velocityTime = System.currentTimeMillis();
+    }
+
+    public boolean inTeleportAccount(){
+        return (System.currentTimeMillis() - teleportTime) < Configuration.globalValues.getInteger("accountForTeleports");
     }
 
     public static CheckCache get(Player player) {

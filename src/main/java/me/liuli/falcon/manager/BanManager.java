@@ -1,10 +1,12 @@
 package me.liuli.falcon.manager;
 
+import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import com.alibaba.fastjson.JSONObject;
 import me.liuli.falcon.FalconAC;
 import me.liuli.falcon.cache.Configuration;
-import me.liuli.falcon.utils.OtherUtils;
+import me.liuli.falcon.utils.OtherUtil;
 
 import java.io.File;
 import java.util.UUID;
@@ -16,9 +18,9 @@ public class BanManager {
     public static void loadBanData() {
         dataPath = FalconAC.plugin.getDataFolder().getPath() + "/data/ban.json";
         if (!new File(dataPath).exists()) {
-            OtherUtils.writeFile(dataPath, "{}");
+            OtherUtil.writeFile(dataPath, "{}");
         }
-        banJSON = JSONObject.parseObject(OtherUtils.readFile(new File(dataPath)));
+        banJSON = JSONObject.parseObject(OtherUtil.readFile(new File(dataPath)));
     }
 
     public static void addBan(Player player, long expire) {
@@ -29,14 +31,28 @@ public class BanManager {
     }
 
     public static void removeBan(String banid) {
-        banJSON.remove(banid);
+        String upperId=banid.toUpperCase();
+        if(banJSON.containsKey(upperId)) {
+            banJSON.remove(upperId);
+            FalconAC.plugin.getLogger().warning("UNBAN BANID:"+upperId+" FROM BANID.");
+        }else{
+            UUID offlineUUID=Server.getInstance().getOfflinePlayer(banid).getUniqueId();
+            if(offlineUUID!=null){
+                String offlineBanId=banIdGen(offlineUUID);
+                banJSON.remove(offlineBanId);
+                FalconAC.plugin.getLogger().warning("UNBAN BANID:"+offlineBanId+" FROM PLAYERNAME("+banid+").");
+            }else {
+                FalconAC.plugin.getLogger().warning("CANNOT FIND PLAYER WITH NAME "+banid+".");
+            }
+        }
+        saveBanData();
     }
 
     public static void checkBan(Player player) {
         String banid = banIdGen(player.getUniqueId());
         Long expire = banJSON.getLong(banid);
         if (expire != null) {
-            if (OtherUtils.getTime() > expire && expire != -1) {
+            if (OtherUtil.getTime() > expire && expire != -1) {
                 banJSON.remove(banid);
                 saveBanData();
             } else {
@@ -44,7 +60,7 @@ public class BanManager {
                 if (expire == -1) {
                     time = "FOREVER";
                 } else {
-                    time = OtherUtils.t2s(expire - OtherUtils.getTime());
+                    time = OtherUtil.t2s(expire - OtherUtil.getTime());
                 }
                 player.kick(Configuration.LANG.BAN_REASON.proc(new String[]{time, banid}), false);
             }
@@ -52,7 +68,7 @@ public class BanManager {
     }
 
     private static void saveBanData() {
-        OtherUtils.writeFile(dataPath, banJSON.toJSONString());
+        OtherUtil.writeFile(dataPath, banJSON.toJSONString());
     }
 
     private static String banIdGen(UUID uuid) {

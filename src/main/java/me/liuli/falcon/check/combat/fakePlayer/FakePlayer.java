@@ -9,7 +9,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.*;
-import me.liuli.falcon.utils.RandUtils;
+import me.liuli.falcon.utils.RandUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -30,7 +30,7 @@ public class FakePlayer {
 
     public FakePlayer(String name, Position pos) {
         Random random = new Random();
-        this.entityId = RandUtils.RandInt(10000, 1000000);
+        this.entityId = RandUtil.RandInt(10000, 1000000);
         this.name = name;
         this.pos = pos;
         this.uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));

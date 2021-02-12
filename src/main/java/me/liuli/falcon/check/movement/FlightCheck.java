@@ -1,7 +1,6 @@
 package me.liuli.falcon.check.movement;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.potion.Effect;
 import me.liuli.falcon.cache.CheckCache;
@@ -9,7 +8,7 @@ import me.liuli.falcon.cache.Distance;
 import me.liuli.falcon.cache.MovementCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
-import me.liuli.falcon.utils.MoveUtils;
+import me.liuli.falcon.utils.MoveUtil;
 
 public class FlightCheck {
     public static CheckResult runCheck(Player player, Distance distance) {
@@ -17,11 +16,11 @@ public class FlightCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (cache.inVelocity() || player.isSleeping() || player.getRiding() != null || player.getAllowFlight())
+        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
-        if (movementCache.nearLiquidTicks > 0 || movementCache.halfMovement || MoveUtils.isNearBlock(player.getPosition(),Block.LADDER))
+        if (movementCache.nearLiquidTicks > 0 || movementCache.halfMovement || MoveUtil.isNearBlock(player.getPosition(),Block.LADDER))
             return CheckResult.PASSED;
 
         int minAirTicks = 13;
@@ -39,23 +38,23 @@ public class FlightCheck {
             // Fixes snow false positive
             if (movementCache.motionY < 0.004)
                 maxMotionY += 0.004D;
-            if (MoveUtils.isNearBlock(player.getPosition(),Block.STILL_WATER)
-                    || MoveUtils.isNearBlock(distance.getFrom().clone().subtract(0, 0.51, 0),Block.STILL_WATER))
+            if (MoveUtil.isNearBlock(player.getPosition(),Block.STILL_WATER)
+                    || MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51, 0),Block.STILL_WATER))
                 maxMotionY += 0.05;
             if (movementCache.motionY > maxMotionY && movementCache.slimeInfluenceTicks <= 0
-                    && !MoveUtils.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
-                    && !MoveUtils.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
-                    && (!MoveUtils.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
+                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
+                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
+                    && (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
                     && !distance.getTo().clone().subtract(0, 0.5, 0).getLevelBlock().canPassThrough()))
                 return new CheckResult("tried to fly on the Y-axis (mY=" + movementCache.motionY + ", max=" + maxMotionY + ")");
 
             if (Math.abs(movementCache.motionY
                     - movementCache.lastMotionY) < (movementCache.airTicks >= 115 ? 1E-3 : 5E-3)
-                    && !player.hasEffect(Effect.SLOW_FALLING) && !MoveUtils.isNearBlock(player.getPosition(),Block.COBWEB)
+                    && !player.hasEffect(Effect.SLOW_FALLING) && !MoveUtil.isNearBlock(player.getPosition(),Block.COBWEB)
                     && movementCache.elytraEffectTicks <= 25
-                    && !MoveUtils.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.LADDER)
-                    && !MoveUtils.isNearBlock(player.getPosition(),Block.STILL_WATER)
-                    && !MoveUtils.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.STILL_WATER))
+                    && !MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.LADDER)
+                    && !MoveUtil.isNearBlock(player.getPosition(),Block.STILL_WATER)
+                    && !MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.STILL_WATER))
                 return new CheckResult("had too little Y dropoff (diff="
                         + Math.abs(movementCache.motionY - movementCache.lastMotionY) + ")");
         }
@@ -67,8 +66,8 @@ public class FlightCheck {
                 && !(Math.round(movementCache.motionY * 1000) == 333
                 && Math.round(movementCache.lastMotionY * 1000) != 333)
                 && !player.hasEffect(Effect.JUMP)
-                && (!MoveUtils.isNearBlock(distance.getTo(),Block.BED_BLOCK) || ((MoveUtils.isNearBlock(distance.getTo(),Block.BED_BLOCK)
-                || MoveUtils.isNearBlock(distance.getTo().clone().add(0, -0.51, 0),Block.BED_BLOCK))
+                && (!MoveUtil.isNearBlock(distance.getTo(),Block.BED_BLOCK) || ((MoveUtil.isNearBlock(distance.getTo(),Block.BED_BLOCK)
+                || MoveUtil.isNearBlock(distance.getTo().clone().add(0, -0.51, 0),Block.BED_BLOCK))
                 && movementCache.motionY > 0.15))
                 && movementCache.slimeInfluenceTicks == 0 && movementCache.elytraEffectTicks <= 25)
             return new CheckResult("tried to climb air (mY=" + movementCache.motionY + ")");
@@ -93,14 +92,14 @@ public class FlightCheck {
 
         //Gravity
         if (!movementCache.onGround && movementCache.motionY < 0
-                && !MoveUtils.isNearBlock(player.getPosition(),Block.COBWEB) && movementCache.elytraEffectTicks <= 25
-                && !player.hasEffect(Effect.SLOW_FALLING)) {
+                && !MoveUtil.isNearBlock(player.getPosition(),Block.COBWEB) && movementCache.elytraEffectTicks <= 25
+                && !player.hasEffect(Effect.SLOW_FALLING) && movementCache.airTicks>minAirTicks) {
             double gravitatedY = (movementCache.lastMotionY - 0.08) * CheckType.FLIGHT.otherData.getJSONObject("gravity").getDouble("friction");
             double offset = Math.abs(gravitatedY - movementCache.motionY);
             double maxOffset = CheckType.FLIGHT.otherData.getJSONObject("gravity").getDouble("maxOffset");
-            if (MoveUtils.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.LADDER)
-                    || MoveUtils.isNearBlock(distance.getFrom(),Block.LADDER) || MoveUtils.isNearBlock(player.getPosition(),Block.STILL_WATER)
-                    || (!MoveUtils.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
+            if (MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51D, 0),Block.LADDER)
+                    || MoveUtil.isNearBlock(distance.getFrom(),Block.LADDER) || MoveUtil.isNearBlock(player.getPosition(),Block.STILL_WATER)
+                    || (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
                     && !distance.getTo().clone().subtract(0, 0.5, 0).getLevelBlock().canPassThrough()))
                 maxOffset += 0.15D;
             if (offset > maxOffset && movementCache.airTicks > 2) {
