@@ -21,7 +21,9 @@ package me.liuli.falcon.cache;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Location;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.potion.Effect;
+import me.liuli.falcon.utils.MathUtil;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class MovementCache {
@@ -70,12 +72,13 @@ public class MovementCache {
     public boolean halfMovement;
     // If the player is on the ground (determined clientside!)
     public boolean onGround;
+    public boolean lastOnGround;
     // Ticks counter for last halfMovement
     public int halfMovementHistoryCounter = 0;
     // Elytra effect ticks
     public int elytraEffectTicks;
-    // Used by Velocity check, represents the currently expected Y motion
-    public double velocityExpectedMotionY;
+    public long velocityTime = 0;
+    public double velocityX,velocityY,velocityZ,velocityStopTime = 0;
     // Amount of ticks a player is sneaking
     public int sneakingTicks;
     // Ticks counter after being near a liquid
@@ -91,7 +94,20 @@ public class MovementCache {
     // Time of last update
     public long lastUpdate;
 
+    public void handleVelocity(Vector3 motion){
+        this.velocityTime = System.currentTimeMillis();
+        this.velocityX = motion.getX();
+        this.velocityY = motion.getY();
+        this.velocityZ = motion.getZ();
+        this.velocityStopTime = (((velocityX+velocityZ+velocityY) / 2 + 1) * 750);
+    }
+
+    public boolean inVelocity(){
+        return (velocityTime+velocityStopTime)>System.currentTimeMillis();
+    }
+
     public void handle(Player player, Location from, Location to, Distance distance,boolean onGround) {
+        this.lastOnGround = this.onGround;
         this.onGround = onGround;
 
         double x = distance.getXDifference();
@@ -168,7 +184,7 @@ public class MovementCache {
         this.acceleration = currentDistanceSq - lastDistanceSq;
 
         this.lastMotionY = this.motionY;
-        this.motionY = to.getY() - from.getY();
+        this.motionY = MathUtil.roundDouble(to.getY() - from.getY(),4);
 
         Location top = to.clone().add(0, 2, 0);
         this.topSolid = top.getLevelBlock().isSolid();

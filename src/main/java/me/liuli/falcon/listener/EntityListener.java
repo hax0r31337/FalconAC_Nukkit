@@ -69,8 +69,7 @@ public class EntityListener implements Listener {
 
             CheckCache cache = CheckCache.get(player);
             if(cache!=null){
-                cache.logVelocity();
-                cache.movementCache.velocityExpectedMotionY = event.getMotion().getY();
+                cache.movementCache.handleVelocity(event.getMotion());
             }
         }
     }

@@ -62,7 +62,7 @@ public class BanManager {
                 } else {
                     time = OtherUtil.t2s(expire - OtherUtil.getTime());
                 }
-                player.kick(Configuration.LANG.BAN_REASON.proc(new String[]{time, banid}), false);
+                AnticheatManager.kick(player,Configuration.LANG.BAN_REASON.proc(new String[]{time, banid}));
             }
         }
     }

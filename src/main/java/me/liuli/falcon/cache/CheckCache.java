@@ -23,12 +23,12 @@ public class CheckCache {
     public boolean flagDisable = false;
     public long teleportTime;
     public long lastPacketFlag;
-    //global
-    public long velocityTime;
+    public long lastJump;
     //fast place check
     public long lastPlace;
     //aimbot check
     public int lastRot = 0, sameRot = 0;
+    public long onAimId = -1, onAimTime = 0;
     //noswing check
     public long lastSwing;
     //timer check
@@ -48,18 +48,10 @@ public class CheckCache {
         }
         teleportTime = timeNow;
         lastMovePacket = timeNow;
-        velocityTime = timeNow;
         lastPacketFlag = timeNow;
         lastPlace = timeNow;
         lastSwing = timeNow;
-    }
-
-    public boolean inVelocity(){
-        return (System.currentTimeMillis() - velocityTime) < Configuration.globalValues.getInteger("velocity");
-    }
-
-    public void logVelocity(){
-        velocityTime = System.currentTimeMillis();
+        lastJump = timeNow;
     }
 
     public boolean inTeleportAccount(){

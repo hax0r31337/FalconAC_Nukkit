@@ -10,21 +10,19 @@ import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class WaterWalkCheck {
-    public static CheckResult runCheck(Player player, double x, double y, double z) {
+    public static CheckResult runCheck(Player player,boolean onGround) {
         CheckCache cache = CheckCache.get(player);
         if (cache == null)
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
         if (movementCache.distanceXZ <= 0 || player.getRiding() != null || MoveUtil.inBlock(player, Block.LILY_PAD)
-                || player.isSwimming() || player.getAllowFlight()
-                || movementCache.topSolid || movementCache.bottomSolid)
+                || player.isSwimming() || player.getAllowFlight() || onGround)
             return CheckResult.PASSED;
 
         Block blockBeneath = player.getPosition().clone().subtract(0, 0.1, 0).getLevelBlock();
-        if (!(MoveUtil.isLiquid(blockBeneath) || MoveUtil.isSurroundedByBlock(player.getPosition(), Block.STILL_WATER))) {
+        if (!(MoveUtil.isLiquid(blockBeneath) || MoveUtil.isSurroundedByBlock(player.getPosition(), Block.STILL_WATER)))
             return CheckResult.PASSED;
-        }
 
         if (((movementCache.motionY == 0 && movementCache.lastMotionY == 0)
                 || movementCache.motionY == MoveUtil.JUMP_MOTION_Y)

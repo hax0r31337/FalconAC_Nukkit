@@ -2,12 +2,15 @@ package me.liuli.falcon.manager;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.network.protocol.DisconnectPacket;
 import me.liuli.falcon.FalconAC;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.utils.OtherUtil;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class AnticheatManager {
@@ -137,14 +140,21 @@ public class AnticheatManager {
                 if (Configuration.punishBoardcast) {
                     boardcastMessage(Configuration.LANG.KICK.proc(new String[]{cache.player.getName()}));
                 }
-                cache.player.kick(Configuration.LANG.KICK_REASON.proc(), false);
+                kick(cache.player, Configuration.LANG.KICK_REASON.proc());
                 break;
             }
             case BAN: {
                 if (Configuration.punishBoardcast) {
                     boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
                 }
-                BanManager.addBan(cache.player, OtherUtil.getTime() + (Configuration.ban * 60L));
+
+                long banTime;
+                if(Configuration.ban==-1){
+                    banTime=-1;
+                }else{
+                    banTime=OtherUtil.getTime() + (Configuration.ban * 60L);
+                }
+                BanManager.addBan(cache.player, banTime);
             }
         }
     }
@@ -155,5 +165,19 @@ public class AnticheatManager {
             isOp = false;
         }
         return checkType.enable && isOp;
+    }
+
+    public static void kick(Player player,String message){
+        DisconnectPacket disconnectPacket=new DisconnectPacket();
+        disconnectPacket.hideDisconnectionScreen=false;
+        disconnectPacket.message=message;
+        player.dataPacket(disconnectPacket);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                player.kick(message,false);
+            }
+        }, 1000);
     }
 }

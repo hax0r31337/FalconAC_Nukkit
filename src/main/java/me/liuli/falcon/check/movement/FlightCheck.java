@@ -16,11 +16,11 @@ public class FlightCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || player.getAllowFlight())
+        if (cache.inTeleportAccount() || player.isSleeping() || player.getRiding() != null || player.getAllowFlight())
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;
-        if (movementCache.nearLiquidTicks > 0 || movementCache.halfMovement || MoveUtil.isNearBlock(player.getPosition(),Block.LADDER))
+        if (movementCache.nearLiquidTicks > 0 || movementCache.inVelocity() || movementCache.halfMovement || MoveUtil.isNearBlock(player.getPosition(),Block.LADDER))
             return CheckResult.PASSED;
 
         int minAirTicks = 13;
@@ -42,6 +42,7 @@ public class FlightCheck {
                     || MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51, 0),Block.STILL_WATER))
                 maxMotionY += 0.05;
             if (movementCache.motionY > maxMotionY && movementCache.slimeInfluenceTicks <= 0
+                    && movementCache.airTicks >= minAirTicks
                     && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
                     && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
                     && (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
@@ -69,10 +70,12 @@ public class FlightCheck {
                 && (!MoveUtil.isNearBlock(distance.getTo(),Block.BED_BLOCK) || ((MoveUtil.isNearBlock(distance.getTo(),Block.BED_BLOCK)
                 || MoveUtil.isNearBlock(distance.getTo().clone().add(0, -0.51, 0),Block.BED_BLOCK))
                 && movementCache.motionY > 0.15))
+                && movementCache.airTicks >= minAirTicks
                 && movementCache.slimeInfluenceTicks == 0 && movementCache.elytraEffectTicks <= 25)
             return new CheckResult("tried to climb air (mY=" + movementCache.motionY + ")");
 
         if (movementCache.motionY > 0.42 && movementCache.airTicks > 2
+                && movementCache.airTicks >= minAirTicks
                 && !player.hasEffect(Effect.JUMP)
                 && !(Math.round(movementCache.motionY * 1000) == 425 && movementCache.airTicks == 11)
                 && movementCache.slimeInfluenceTicks == 0 && movementCache.elytraEffectTicks <= 25) {
@@ -86,14 +89,14 @@ public class FlightCheck {
         }
 
         //GroundFlight
-        if((!player.onGround) && movementCache.onGround){
+        if((!player.onGround) && movementCache.lastOnGround){
             return new CheckResult("faked ground to fly (mY=" + movementCache.motionY + ", gt=" + movementCache.groundTicks + ")");
         }
 
         //Gravity
         if (!movementCache.onGround && movementCache.motionY < 0
                 && !MoveUtil.isNearBlock(player.getPosition(),Block.COBWEB) && movementCache.elytraEffectTicks <= 25
-                && !player.hasEffect(Effect.SLOW_FALLING) && movementCache.airTicks>minAirTicks) {
+                && !player.hasEffect(Effect.SLOW_FALLING) && movementCache.airTicks >= minAirTicks) {
             double gravitatedY = (movementCache.lastMotionY - 0.08) * CheckType.FLIGHT.otherData.getJSONObject("gravity").getDouble("friction");
             double offset = Math.abs(gravitatedY - movementCache.motionY);
             double maxOffset = CheckType.FLIGHT.otherData.getJSONObject("gravity").getDouble("maxOffset");
@@ -102,7 +105,7 @@ public class FlightCheck {
                     || (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
                     && !distance.getTo().clone().subtract(0, 0.5, 0).getLevelBlock().canPassThrough()))
                 maxOffset += 0.15D;
-            if (offset > maxOffset && movementCache.airTicks > 2) {
+            if (offset > maxOffset) {
                 return new CheckResult("ignored gravity (offset=" + offset + ", at=" + movementCache.airTicks + ")");
             }
         }

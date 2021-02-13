@@ -14,7 +14,7 @@ import java.io.File;
 
 public class FalconAC extends PluginBase {
     public static FalconAC plugin;
-    public static int CONFIG_VERSION = 2;
+    public static int CONFIG_VERSION = 3;
     private static Thread minusVLThread;
 
     @Override

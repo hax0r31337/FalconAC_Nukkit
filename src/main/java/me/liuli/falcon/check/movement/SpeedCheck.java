@@ -18,10 +18,11 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+        MovementCache movementCache = cache.movementCache;
+
+        if (cache.inTeleportAccount() || movementCache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
-        MovementCache movementCache = cache.movementCache;
         double distanceXZ = movementCache.distanceXZ;
         boolean boxedIn = movementCache.topSolid && movementCache.bottomSolid;
 
@@ -36,6 +37,10 @@ public class SpeedCheck {
             if (movementCache.airTicks >= 115)
                 predict = Math.max(0.08, predict);
             double limit = CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("baseLimit");
+            // jump may cause false result
+            if((System.currentTimeMillis()-cache.lastJump)<500)
+                limit += CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("jumpMultiplier");
+
             // Adjust for ice
             if (movementCache.iceInfluenceTicks > 0) {
                 double iceIncrement = 0.025 * Math.pow(1.038, movementCache.iceInfluenceTicks);
@@ -96,29 +101,6 @@ public class SpeedCheck {
             }
         }
 
-        // AirAcceleration
-        if (movementCache.airTicks > 1 && movementCache.iceInfluenceTicks <= 0
-                && movementCache.slimeInfluenceTicks <= 0 && movementCache.elytraEffectTicks <= 0) {
-            double initialAcceleration = movementCache.acceleration;
-            double limit = CheckType.SPEED.otherData.getJSONObject("airAcceleration").getDouble("baseLimit");
-            // Slight increase when boxed in
-            if (boxedIn)
-                limit *= 1.08D;
-            // Adjust for speed effects
-            if (player.hasEffect(Effect.SPEED))
-                limit += player.getEffect(Effect.SPEED).getAmplifier() * 0.0225D;
-            // Adjust for slabs
-            if (movementCache.halfMovementHistoryCounter > 15)
-                limit *= 2.05D;
-            // Adjust for custom walking speed
-            double walkSpeedMultiplier = CheckType.SPEED.otherData.getJSONObject("airAcceleration")
-                    .getDouble("walkSpeedMultiplier");
-            limit += walkSpeedMultiplier * (Math.pow(1.1, ((movementSpeed / 0.20) - 1)) - 1);
-            if (initialAcceleration > limit) {
-                return new CheckResult("exceeded acceleration limits (acceleration=" + initialAcceleration + ", max=" + limit + ")");
-            }
-        }
-
         // JumpBehaviour
         if (movementCache.touchedGroundThisTick && !boxedIn && movementCache.slimeInfluenceTicks <= 10) {
             // This happens naturally
@@ -133,7 +115,8 @@ public class SpeedCheck {
         }
 
         if (movementCache.groundTicks > 1) {
-            double limit = CheckType.SPEED.otherData.getDouble("groundInitialLimit");
+            double limit = CheckType.SPEED.otherData.getDouble("groundInitialLimit")
+                    + 0.0055 * Math.min(5, movementCache.groundTicks);
             // Leniency when moving back on ground
             if (movementCache.groundTicks < 5)
                 limit += 0.1D;
@@ -198,10 +181,10 @@ public class SpeedCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (cache.inTeleportAccount() || cache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
-            return CheckResult.PASSED;
-
         MovementCache movementCache = cache.movementCache;
+
+        if (cache.inTeleportAccount() || movementCache.inVelocity() || player.isSleeping() || player.getRiding() != null || MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
+            return CheckResult.PASSED;
 
         double maxMotionY = getMaxAcceptableMotionY(player, MoveUtil.isNearBlock(distance.getTo(), Block.BED_BLOCK),
                 MoveUtil.isNearBlock(BlockRelative.getRelative(BlockRelative.DOWN, distance.getFrom().getLevelBlock()), Block.LADDER),
@@ -217,9 +200,10 @@ public class SpeedCheck {
     }
 
     private static double getMaxAcceptableMotionY(Player player, boolean nearBed, boolean fromClimbable, boolean halfMovement) {
-        double base = (nearBed ? 0.6625 : ((halfMovement) ? 0.7 : 0.52));
+        double base = (nearBed ? 0.6625 : ((halfMovement) ? 0.7 : CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("baseLimit")));
+
         if (fromClimbable)
-            base += CheckType.SPEED.otherData.getDouble("verticalCompensation");
+            base += CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("climbableCompensation");
 
         if (player.hasEffect(Effect.JUMP))
             base += player.getEffect(Effect.JUMP).getAmplifier() * 0.2D;

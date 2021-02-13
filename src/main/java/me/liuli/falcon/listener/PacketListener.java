@@ -7,13 +7,11 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.level.Location;
-import cn.nukkit.network.protocol.AnimatePacket;
-import cn.nukkit.network.protocol.DataPacket;
-import cn.nukkit.network.protocol.InventoryTransactionPacket;
-import cn.nukkit.network.protocol.MovePlayerPacket;
+import cn.nukkit.network.protocol.*;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.cache.Distance;
+import me.liuli.falcon.check.combat.VelocityCheck;
 import me.liuli.falcon.check.combat.fakePlayer.FakePlayerManager;
 import me.liuli.falcon.check.misc.BadPacketsCheck;
 import me.liuli.falcon.check.misc.NoSwingCheck;
@@ -29,8 +27,10 @@ public class PacketListener implements Listener {
         if (event.getPlayer() == null) {
             return;
         }
-        boolean shouldFlag = false;
+
         DataPacket packet = event.getPacket();
+        boolean shouldFlag = false;
+
         if (packet instanceof InventoryTransactionPacket) {
             if (AnticheatManager.canCheckPlayer(event.getPlayer(), CheckType.KA_BOT)) {
                 CheckResult checkResult = FakePlayerManager.checkBotHurt(event, (InventoryTransactionPacket) packet);
@@ -52,8 +52,10 @@ public class PacketListener implements Listener {
                 }
             }
             //Nukkit calc onGround and other data by self,i should get these data from packet
-            if(movePlayerHandler((MovePlayerPacket) packet, event.getPlayer())){
-                event.setCancelled();
+            if(event.getPlayer().isAlive()) {
+                if (movePlayerHandler((MovePlayerPacket) packet, event.getPlayer())) {
+                    event.setCancelled();
+                }
             }
         }
         if (!event.isCancelled()) {
@@ -131,9 +133,15 @@ public class PacketListener implements Listener {
             }
         }
         if (AnticheatManager.canCheckPlayer(player, CheckType.WATER_WALK)) {
-            CheckResult result = WaterWalkCheck.runCheck(player, x, distance.getYDifference(), z);
+            CheckResult result = WaterWalkCheck.runCheck(player, packet.onGround);
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(player, CheckType.WATER_WALK, result);
+            }
+        }
+        if (AnticheatManager.canCheckPlayer(player, CheckType.VELOCITY)) {
+            CheckResult result = VelocityCheck.runCheck(player);
+            if (result.failed()) {
+                shouldFlag = AnticheatManager.addVL(player, CheckType.VELOCITY, result);
             }
         }
 

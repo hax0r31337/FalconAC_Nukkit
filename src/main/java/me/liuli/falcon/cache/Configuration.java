@@ -58,6 +58,7 @@ public class Configuration {
         loadType(CheckType.KA_BOT, moduleJSON.getJSONObject("killaura_bot"));
         loadType(CheckType.AIMBOT, moduleJSON.getJSONObject("aimbot"));
         loadType(CheckType.CRITICALS, moduleJSON.getJSONObject("criticals"));
+        loadType(CheckType.VELOCITY, moduleJSON.getJSONObject("velocity"));
         //movement
         loadType(CheckType.SPEED, moduleJSON.getJSONObject("speed"));
         loadType(CheckType.FLIGHT, moduleJSON.getJSONObject("flight"));

@@ -20,81 +20,77 @@ public class CommandListener extends Command {
     public boolean execute(CommandSender sender, String s, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(versionStr);
+            if(sender.isOp()){
+                sender.sendMessage("Type /falcon help to show help messages");
+            }
             return false;
         }
-        switch (args[0]) {
-            case "ban": {
-                Player player = Server.getInstance().getPlayer(args[1]);
-                if (player == null) {
-                    sender.sendMessage(Configuration.LANG.ALERT_PREFIX.proc() + "Cannot found player");
-                    return false;
+        if(sender.isOp()){
+            switch (args[0]) {
+                case "ban": {
+                    Player player = Server.getInstance().getPlayer(args[1]);
+                    if (player == null) {
+                        sender.sendMessage(Configuration.LANG.ALERT_PREFIX.proc() + "Cannot found player");
+                        return false;
+                    }
+                    long banTime = OtherUtil.getTime() + (Configuration.ban * 60L);
+                    if (args.length == 3) {
+                        banTime = OtherUtil.getTime() + new Long(args[2]);
+                    }
+                    BanManager.addBan(player, banTime);
+                    break;
                 }
-                long banTime = OtherUtil.getTime() + (Configuration.ban * 60L);
-                if (args.length == 3) {
-                    banTime = OtherUtil.getTime() + new Long(args[2]);
+                case "unban": {
+                    BanManager.removeBan(args[1]);
+                    break;
                 }
-                BanManager.addBan(player, banTime);
-                break;
-            }
-            case "unban": {
-                BanManager.removeBan(args[1]);
-                break;
-            }
-            case "consoledebug": {
-                if (sender.isOp()) {
+                case "consoledebug": {
                     Configuration.consoleDebug = !Configuration.consoleDebug;
                     sender.sendMessage("Change \"ConsoleDebug\" to " + Configuration.consoleDebug);
                     sender.sendMessage("This will only change config this time.If you want to change forever,please change in config.yml");
+                    break;
                 }
-                break;
-            }
-            case "playerdebug": {
-                if (sender.isOp()) {
+                case "playerdebug": {
                     Configuration.playerDebug = !Configuration.playerDebug;
                     sender.sendMessage("Change \"PlayerDebug\" to " + Configuration.playerDebug);
                     sender.sendMessage("This will only change config this time.If you want to change forever,please change in config.yml");
+                    break;
                 }
-                break;
-            }
-            case "flag": {
-                if (sender.isOp()) {
+                case "flag": {
                     Configuration.flag = !Configuration.flag;
                     sender.sendMessage("Change \"Flag\" to " + Configuration.flag);
                     sender.sendMessage("This will only change config this time.If you want to change forever,please change in config.yml");
+                    break;
                 }
-                break;
-            }
-            case "checkop": {
-                if (sender.isOp()) {
+                case "checkop": {
                     Configuration.checkOp = !Configuration.checkOp;
                     sender.sendMessage("Change \"CheckOp\" to " + Configuration.checkOp);
                     sender.sendMessage("This will only change config this time.If you want to change forever,please change in config.yml");
+                    break;
                 }
-                break;
-            }
-            case "punishboardcast": {
-                if (sender.isOp()) {
+                case "punishboardcast": {
                     Configuration.punishBoardcast = !Configuration.punishBoardcast;
                     sender.sendMessage("Change \"PunishBoardcast\" to " + Configuration.punishBoardcast);
                     sender.sendMessage("This will only change config this time.If you want to change forever,please change in config.yml");
+                    break;
                 }
-                break;
-            }
-            case "help": {
-                if (sender.isOp()) {
-                    sender.sendMessage("§6§lFalcon§bAC §fCOMMANDS");
+                case "help": {
+                    sender.sendMessage("§6§lFalcon §bCOMMANDS");
+                    sender.sendMessage("/falcon ban");
+                    sender.sendMessage("/falcon unban");
                     sender.sendMessage("/falcon consoledebug");
                     sender.sendMessage("/falcon playerdebug");
                     sender.sendMessage("/falcon flag");
                     sender.sendMessage("/falcon checkop");
                     sender.sendMessage("/falcon punishboardcast");
+                    break;
                 }
-                break;
+                default:{
+                    sender.sendMessage(versionStr);
+                }
             }
-            default: {
-                sender.sendMessage(versionStr);
-                break;
-            }
+        }else{
+            sender.sendMessage(versionStr);
         }
         return false;
     }

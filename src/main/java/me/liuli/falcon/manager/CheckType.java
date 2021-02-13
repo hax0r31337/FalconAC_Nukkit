@@ -7,6 +7,7 @@ public enum CheckType {
     KA_BOT(CheckCategory.COMBAT),
     AIMBOT(CheckCategory.COMBAT),
     CRITICALS(CheckCategory.COMBAT),
+    VELOCITY(CheckCategory.COMBAT),
     SPEED(CheckCategory.MOVEMENT),
     FLIGHT(CheckCategory.MOVEMENT),
     STRAFE(CheckCategory.MOVEMENT),
