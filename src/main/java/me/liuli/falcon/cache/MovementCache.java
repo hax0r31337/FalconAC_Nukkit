@@ -42,10 +42,14 @@ public class MovementCache {
     public int iceInfluenceTicks = 0;
     // Ticks influenced by slime
     public int slimeInfluenceTicks = 0;
-    // Y motion of the movement
+    // motion of the movement
+    public double motionX;
     public double motionY;
-    // Previous Y motion of the movement
+    public double motionZ;
+    // Previous motion of the movemen
+    public double lastMotionX;
     public double lastMotionY;
+    public double lastMotionZ;
     // Horizontal distance of movement
     public double distanceXZ;
     // Horizontal distance on x-axis of movement
@@ -100,6 +104,12 @@ public class MovementCache {
         this.velocityY = motion.getY();
         this.velocityZ = motion.getZ();
         this.velocityStopTime = (((velocityX+velocityZ+velocityY) / 2 + 1) * 750);
+    }
+
+    public void resetVelocity(){
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.velocityZ = 0;
     }
 
     public boolean inVelocity(){
@@ -183,8 +193,12 @@ public class MovementCache {
                 + distance.getZDifference() * distance.getZDifference());
         this.acceleration = currentDistanceSq - lastDistanceSq;
 
+        this.lastMotionX = this.motionX;
         this.lastMotionY = this.motionY;
+        this.lastMotionZ = this.motionZ;
+        this.motionX = MathUtil.roundDouble(to.getX() - from.getX(),4);
         this.motionY = MathUtil.roundDouble(to.getY() - from.getY(),4);
+        this.motionZ = MathUtil.roundDouble(to.getZ() - from.getZ(),4);
 
         Location top = to.clone().add(0, 2, 0);
         this.topSolid = top.getLevelBlock().isSolid();

@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MinusVL implements Runnable {
+    public boolean running=true;
+
     @Override
     public void run() {
-        while (true) {
+        while (running) {
             try {
                 Thread.sleep(1000);
                 for (Map.Entry<UUID, Player> entry : Server.getInstance().getOnlinePlayers().entrySet()) {

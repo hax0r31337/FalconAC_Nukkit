@@ -52,7 +52,6 @@ public class AimbotCheck {
                         if (angleDifference < checkConfig.getInteger("maxDiff")) {
                             if (cache.onAimId == viewPlayer.getId()) {
                                 cache.onAimTime++;
-                                player.sendMessage("AIM: "+cache.onAimTime);
                                 increased = true;
                                 if (cache.onAimTime > checkConfig.getInteger("minTimes")) {
                                     return new CheckResult("aiming too accuracy(times=" + cache.onAimTime + ",diff=" + angleDifference + ")");

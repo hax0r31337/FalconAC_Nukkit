@@ -12,9 +12,12 @@ import java.util.Map;
 
 public class Configuration {
     public static boolean checkOp, consoleDebug, playerDebug, flag, punishBoardcast;
-    public static JSONObject globalValues;
     public static int ban;
     private static JSONObject configJSON, langJSON;
+
+    //global values
+    public static int accountForTeleports;
+    public static boolean smartFlag;
 
     public static void loadConfig() {
         if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml").exists()) {
@@ -73,7 +76,13 @@ public class Configuration {
         loadType(CheckType.NOSWING, moduleJSON.getJSONObject("noswing"));
         loadType(CheckType.BADPACKETS, moduleJSON.getJSONObject("badpackets"));
 
-        globalValues=configJSON.getJSONObject("global");
+        JSONObject globalValues=configJSON.getJSONObject("global");
+        accountForTeleports=globalValues.getInteger("accountForTeleports");
+        smartFlag=globalValues.getBoolean("smartFlag");
+
+        //register smartFlag
+        CheckType.VELOCITY.canSmartFlag=true;
+        CheckType.NOCLIP.canSmartFlag=true;
     }
 
     private static void loadCategory(CheckCategory category, JSONObject data) {

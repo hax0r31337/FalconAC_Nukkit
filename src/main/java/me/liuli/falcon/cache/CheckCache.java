@@ -55,7 +55,7 @@ public class CheckCache {
     }
 
     public boolean inTeleportAccount(){
-        return (System.currentTimeMillis() - teleportTime) < Configuration.globalValues.getInteger("accountForTeleports");
+        return (System.currentTimeMillis() - teleportTime) < Configuration.accountForTeleports;
     }
 
     public static CheckCache get(Player player) {

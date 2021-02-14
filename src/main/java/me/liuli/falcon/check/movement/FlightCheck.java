@@ -43,6 +43,7 @@ public class FlightCheck {
                 maxMotionY += 0.05;
             if (movementCache.motionY > maxMotionY && movementCache.slimeInfluenceTicks <= 0
                     && movementCache.airTicks >= minAirTicks
+                    && (System.currentTimeMillis()-cache.lastPlace)<1000
                     && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
                     && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
                     && (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)

@@ -67,7 +67,7 @@ public class BanManager {
         }
     }
 
-    private static void saveBanData() {
+    public static void saveBanData() {
         OtherUtil.writeFile(dataPath, banJSON.toJSONString());
     }
 

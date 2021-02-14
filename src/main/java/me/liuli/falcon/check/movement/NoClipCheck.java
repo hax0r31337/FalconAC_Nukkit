@@ -7,6 +7,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.UpdateBlockPacket;
+import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.global.Collision;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
@@ -25,7 +26,7 @@ public class NoClipCheck {
             packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
             player.dataPacket(packet);
 
-            if(CheckType.NOCLIP.otherData.getBoolean("smartFlag")){
+            if(Configuration.smartFlag){
                 for(int i = (int) from.y+2; i<255; i++){
                     Position pos=Position.fromObject(new Vector3(from.x,i, from.z),from.level);
                     if(pos.getLevelBlock().getId()==Block.AIR){

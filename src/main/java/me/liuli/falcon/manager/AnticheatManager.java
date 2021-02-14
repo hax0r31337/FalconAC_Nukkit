@@ -87,7 +87,7 @@ public class AnticheatManager {
         if (Configuration.consoleDebug) {
             FalconAC.plugin.getLogger().info(cache.player.getName() + " §7failed §b" + checkType.category.name() + "." + checkType.name() + " §fvl:" + nowVL + "/" + maxVL + " " + debugMsg);
         }
-        return shouldFlag;
+        return (shouldFlag && !checkType.canSmartFlag);
     }
 
     public static void minusPassVl(Player player, CheckCategory category) {

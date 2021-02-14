@@ -14,8 +14,8 @@ import java.io.File;
 
 public class FalconAC extends PluginBase {
     public static FalconAC plugin;
-    public static int CONFIG_VERSION = 3;
-    private static Thread minusVLThread;
+    public static int CONFIG_VERSION = 4;
+    private static MinusVL minusVLThread;
 
     @Override
     public void onEnable() {
@@ -31,8 +31,8 @@ public class FalconAC extends PluginBase {
         BanManager.loadBanData();
 
         //start threads
-        minusVLThread = new Thread(new MinusVL());
-        minusVLThread.start();
+        minusVLThread = new MinusVL();
+        new Thread(minusVLThread).start();
 
         //register listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -50,5 +50,7 @@ public class FalconAC extends PluginBase {
 
     @Override
     public void onDisable() {
+        minusVLThread.running=false;
+        BanManager.saveBanData();
     }
 }
