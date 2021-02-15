@@ -10,7 +10,6 @@ import cn.nukkit.network.protocol.UpdateBlockPacket;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.check.global.Collision;
 import me.liuli.falcon.manager.CheckResult;
-import me.liuli.falcon.manager.CheckType;
 
 public class NoClipCheck {
     public static CheckResult check(Player player,Location from) {

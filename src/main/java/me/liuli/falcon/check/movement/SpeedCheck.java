@@ -9,7 +9,6 @@ import me.liuli.falcon.cache.Distance;
 import me.liuli.falcon.cache.MovementCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
-import me.liuli.falcon.other.BlockRelative;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class SpeedCheck {
@@ -115,8 +114,7 @@ public class SpeedCheck {
         }
 
         if (movementCache.groundTicks > 1) {
-            double limit = CheckType.SPEED.otherData.getDouble("groundInitialLimit")
-                    + 0.0055 * Math.min(5, movementCache.groundTicks);
+            double limit = CheckType.SPEED.otherData.getDouble("groundInitialLimit");
             // Leniency when moving back on ground
             if (movementCache.groundTicks < 5)
                 limit += 0.1D;
@@ -187,7 +185,7 @@ public class SpeedCheck {
             return CheckResult.PASSED;
 
         double maxMotionY = getMaxAcceptableMotionY(player, MoveUtil.isNearBlock(distance.getTo(), Block.BED_BLOCK),
-                MoveUtil.isNearBlock(BlockRelative.getRelative(BlockRelative.DOWN, distance.getFrom().getLevelBlock()), Block.LADDER),
+                movementCache.onGround,
                 movementCache.halfMovement);
 
         if (movementCache.nearLiquidTicks > 6)
@@ -199,10 +197,10 @@ public class SpeedCheck {
         return CheckResult.PASSED;
     }
 
-    private static double getMaxAcceptableMotionY(Player player, boolean nearBed, boolean fromClimbable, boolean halfMovement) {
+    private static double getMaxAcceptableMotionY(Player player, boolean nearBed, boolean onground, boolean halfMovement) {
         double base = (nearBed ? 0.6625 : ((halfMovement) ? 0.7 : CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("baseLimit")));
 
-        if (fromClimbable)
+        if (!onground && MoveUtil.isNearSolid(player.getPosition()))
             base += CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("climbableCompensation");
 
         if (player.hasEffect(Effect.JUMP))

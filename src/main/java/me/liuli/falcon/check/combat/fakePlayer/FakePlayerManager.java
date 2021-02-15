@@ -10,6 +10,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.network.protocol.InventoryTransactionPacket;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
+import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.MathUtil;
 
 import java.util.Date;
@@ -65,9 +66,12 @@ public class FakePlayerManager {
             UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) inventoryTransactionPacket.transactionData;
             entityId = useItemOnEntityData.entityRuntimeId;
         }
-        if (entityId == CheckCache.get(event.getPlayer()).fakePlayer.getEntityId()) {
+        FakePlayer fakePlayer=CheckCache.get(event.getPlayer()).fakePlayer;
+        if (entityId == fakePlayer.getEntityId()) {
             FakePlayerManager.botHurt(event.getPlayer());
-            return new CheckResult("Trying to attack a fakeplayer");
+            if(!(Math.abs(fakePlayer.rot) < CheckType.KA_BOT.otherData.getInteger("mustHitRot"))) {
+                return new CheckResult("Trying to attack a fakeplayer(rot="+Math.abs(fakePlayer.rot)+")");
+            }
         }
         return CheckResult.PASSED;
     }
@@ -96,11 +100,27 @@ public class FakePlayerManager {
             fakePlayer.updateNametag(player, player.getNameTag().replaceAll(player.getName(), fakePlayer.name));
         }
         if ((new Date().getTime() - CheckCache.get(player).lastHurt) < 15000) {
-            double rot = location.yaw + MathUtil.randInt(150, 210), y = location.y + 1.62;
+            double rot = location.yaw + fakePlayer.rot, y = location.y + 1.62;
+
+            if(fakePlayer.inRotate){
+                CheckCache.get(player).lastHurt=System.currentTimeMillis();
+
+                fakePlayer.rot-=CheckType.KA_BOT.otherData.getInteger("rotSpeed");
+                if(fakePlayer.rot<=-180){
+                    fakePlayer.rot=180;
+                    fakePlayer.rotCircle++;
+                }
+                if(fakePlayer.rotCircle>=CheckType.KA_BOT.otherData.getInteger("rotCount")){
+                    fakePlayer.inRotate=false;
+                    fakePlayer.rotCircle=0;
+                }
+            }
+
             if (!onGround) {
                 y += MathUtil.randDouble(0, 0.5);
             }
-            fakePlayer.moveBot(new Position((location.x - Math.sin(rot * Math.PI / 180) * 2) + MathUtil.randDouble(-0.5, 0.5), y, (location.z + Math.cos(rot * Math.PI / 180) * 2) + MathUtil.randDouble(-0.5, 0.5)), onGround, player);
+            fakePlayer.moveBot(new Position((location.x - Math.sin(rot * Math.PI / 180) * 2) + MathUtil.randDouble(-0.5, 0.5),
+                    y, (location.z + Math.cos(rot * Math.PI / 180) * 2) + MathUtil.randDouble(-0.5, 0.5)), onGround, player);
         } else {
             fakePlayer.moveBot(new Position(location.x, MathUtil.randDouble(250, 252), location.z), false, player);
         }

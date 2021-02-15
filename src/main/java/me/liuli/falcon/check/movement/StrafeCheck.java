@@ -17,7 +17,8 @@ public class StrafeCheck {
         if (cache == null)
             return CheckResult.PASSED;
 
-        if (MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight() || !player.isAlive())
+        if (MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight() || !player.isAlive()
+                || MoveUtil.isNearSolid(player.getPosition()) || MoveUtil.isNearSolid(player.getPosition().add(0,1,0)))
             return CheckResult.PASSED;
 
         MovementCache movementCache = cache.movementCache;

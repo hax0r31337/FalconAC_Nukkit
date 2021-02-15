@@ -21,7 +21,7 @@ public enum CheckType {
 
     public boolean enable = false;
     public boolean canSmartFlag = false;
-    public int addVl = 1;
+    public float addVl = 1;
     public CheckCategory category;
     public JSONObject otherData = new JSONObject();
 

@@ -30,6 +30,32 @@ public class MoveUtil {
                 || isBlock(BlockRelative.getRelative(BlockRelative.SOUTH_WEST, block), id);
     }
 
+    public static boolean isNearSolid(Player player) {
+        Block block = player.getPosition().getLevelBlock();
+        return !block.canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.WEST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH_EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH_WEST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH_EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH_WEST, block).canPassThrough();
+    }
+
+    public static boolean isNearSolid(Position position) {
+        Block block = position.getLevelBlock();
+        return !block.canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.WEST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH_EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.NORTH_WEST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH_EAST, block).canPassThrough()
+                || !BlockRelative.getRelative(BlockRelative.SOUTH_WEST, block).canPassThrough();
+    }
+
     public static boolean isSurroundedByBlock(Position position, int id) {
         Block block = position.getLevelBlock();
         return isBlock(block, id)

@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3f;
+import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.LocationUtil;
@@ -17,6 +18,7 @@ public class KillauraCheck {
             double yawDifference = calculateYawDifference(player.getLocation(), entity.getLocation());
             double angleDifference = Math.abs(180 - Math.abs(Math.abs(yawDifference - player.yaw) - 180));
             if (Math.round(angleDifference) > CheckType.KILLAURA.otherData.getInteger("angle")) {
+                CheckCache.get(player).fakePlayer.inRotate=true;
                 return new CheckResult("tried to attack from an illegal angle (angle=" + Math.round(angleDifference) + ")");
             }
         }
@@ -27,14 +29,19 @@ public class KillauraCheck {
         float allowedReach = player.gamemode != 1 ? CheckType.KILLAURA.otherData.getFloat("reach-common") : CheckType.KILLAURA.otherData.getFloat("reach-creative");
         if (player.gamemode == 1)
             allowedReach += 1.5D;
+
+        allowedReach += target.getBoundingBox().getAverageEdgeLength();
         allowedReach += player.getPing() * CheckType.KILLAURA.otherData.getFloat("reach-ping");
+
         if (target instanceof Player) {
             allowedReach += ((Player) target).getPing() * CheckType.KILLAURA.otherData.getFloat("reach-ping");
         }
         // Velocity compensation
         double reachedDistance = target.getLocation().distance(player.getLocation());
-        if (reachedDistance > allowedReach)
+        if (reachedDistance > allowedReach) {
+            CheckCache.get(player).fakePlayer.inRotate=true;
             return new CheckResult("reached too far (distance=" + reachedDistance + ", max=" + allowedReach + ")");
+        }
         return CheckResult.PASSED;
     }
 

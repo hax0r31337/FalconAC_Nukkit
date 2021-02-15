@@ -4,8 +4,10 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.manager.BanManager;
+import me.liuli.falcon.manager.CheckCategory;
 import me.liuli.falcon.utils.OtherUtil;
 
 public class CommandListener extends Command {
@@ -44,6 +46,18 @@ public class CommandListener extends Command {
                     BanManager.removeBan(args[1]);
                     break;
                 }
+                case "info": {
+                    Player player=Server.getInstance().getPlayer(args[1]);
+                    if(player!=null){
+                        CheckCache cache=CheckCache.get(player);
+                        sender.sendMessage(player.getName()+"'s INFO");
+                        sender.sendMessage("COMBAT VIOLENCE: "+cache.combatVL+"/"+CheckCategory.COMBAT.vl);
+                        sender.sendMessage("MOVEMENT VIOLENCE: "+cache.movementVL+"/"+CheckCategory.MOVEMENT.vl);
+                        sender.sendMessage("WORLD VIOLENCE: "+cache.worldVL+"/"+CheckCategory.WORLD.vl);
+                        sender.sendMessage("MISC VIOLENCE: "+cache.miscVL+"/"+CheckCategory.MISC.vl);
+                    }
+                    break;
+                }
                 case "consoledebug": {
                     Configuration.consoleDebug = !Configuration.consoleDebug;
                     sender.sendMessage("Change \"ConsoleDebug\" to " + Configuration.consoleDebug);
@@ -76,8 +90,9 @@ public class CommandListener extends Command {
                 }
                 case "help": {
                     sender.sendMessage("§6§lFalcon §bCOMMANDS");
-                    sender.sendMessage("/falcon ban");
-                    sender.sendMessage("/falcon unban");
+                    sender.sendMessage("/falcon ban <player>");
+                    sender.sendMessage("/falcon unban <banid/player>");
+                    sender.sendMessage("/falcon info <player>");
                     sender.sendMessage("/falcon consoledebug");
                     sender.sendMessage("/falcon playerdebug");
                     sender.sendMessage("/falcon flag");

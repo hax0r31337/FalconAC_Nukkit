@@ -1,6 +1,5 @@
 package me.liuli.falcon.manager;
 
-import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import com.alibaba.fastjson.JSONObject;

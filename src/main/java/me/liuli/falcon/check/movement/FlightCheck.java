@@ -41,14 +41,15 @@ public class FlightCheck {
             if (MoveUtil.isNearBlock(player.getPosition(),Block.STILL_WATER)
                     || MoveUtil.isNearBlock(distance.getFrom().clone().subtract(0, 0.51, 0),Block.STILL_WATER))
                 maxMotionY += 0.05;
-            if (movementCache.motionY > maxMotionY && movementCache.slimeInfluenceTicks <= 0
-                    && movementCache.airTicks >= minAirTicks
-                    && (System.currentTimeMillis()-cache.lastPlace)<1000
-                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
-                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
-                    && (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
-                    && !distance.getTo().clone().subtract(0, 0.5, 0).getLevelBlock().canPassThrough()))
-                return new CheckResult("tried to fly on the Y-axis (mY=" + movementCache.motionY + ", max=" + maxMotionY + ")");
+            //搭高高误报 :(
+//            if (movementCache.motionY > maxMotionY && movementCache.slimeInfluenceTicks <= 0
+//                    && movementCache.airTicks >= minAirTicks
+//                    && (System.currentTimeMillis()-cache.lastPlace)<1000
+//                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.25, 0),Block.LADDER)
+//                    && !MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 0.75, 0),Block.LADDER)
+//                    && (!MoveUtil.isNearBlock(distance.getTo().clone().subtract(0, 1.5, 0),Block.STILL_WATER)
+//                    && !distance.getTo().clone().subtract(0, 0.5, 0).getLevelBlock().canPassThrough()))
+//                return new CheckResult("tried to fly on the Y-axis (mY=" + movementCache.motionY + ", max=" + maxMotionY + ")");
 
             if (Math.abs(movementCache.motionY
                     - movementCache.lastMotionY) < (movementCache.airTicks >= 115 ? 1E-3 : 5E-3)
@@ -90,8 +91,15 @@ public class FlightCheck {
         }
 
         //GroundFlight
-        if((!player.onGround) && movementCache.lastOnGround){
-            return new CheckResult("faked ground to fly (mY=" + movementCache.motionY + ", gt=" + movementCache.groundTicks + ")");
+        boolean realOnGround=player.onGround;
+        //nukkit have a bad api.
+        //it will think player is "onGround" when horizontal flight
+        if(!MoveUtil.isNearSolid(player.clone().subtract(0,1,0))){
+            realOnGround=false;
+        }
+
+        if((!realOnGround) && movementCache.lastOnGround){
+            return new CheckResult("faked ground to fly (og=" + player.onGround + ", rog=" + realOnGround + ")");
         }
 
         //Gravity

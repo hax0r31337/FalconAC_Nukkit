@@ -2,12 +2,10 @@ package me.liuli.falcon.check.combat;
 
 import cn.nukkit.Player;
 import cn.nukkit.level.Location;
-import cn.nukkit.math.Vector3f;
 import com.alibaba.fastjson.JSONObject;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
-import me.liuli.falcon.utils.LocationUtil;
 
 public class AimbotCheck {
     public static CheckResult check(Player player, Location from, Location to) {
@@ -36,6 +34,7 @@ public class AimbotCheck {
             }
             cache.lastRot = moveLength;
             if (cache.sameRot > smoothSame) {
+                cache.fakePlayer.inRotate=true;
                 return new CheckResult("Rotate too smooth(speed=" + moveLength + ",times=" + cache.sameRot + ")");
             }
         }
@@ -54,6 +53,7 @@ public class AimbotCheck {
                                 cache.onAimTime++;
                                 increased = true;
                                 if (cache.onAimTime > checkConfig.getInteger("minTimes")) {
+                                    cache.fakePlayer.inRotate=true;
                                     return new CheckResult("aiming too accuracy(times=" + cache.onAimTime + ",diff=" + angleDifference + ")");
                                 }
                             } else {

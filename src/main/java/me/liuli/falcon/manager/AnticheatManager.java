@@ -4,6 +4,8 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.network.protocol.DisconnectPacket;
 import me.liuli.falcon.FalconAC;
+import me.liuli.falcon.api.FalconPlayerHackEvent;
+import me.liuli.falcon.api.FalconPlayerPunishEvent;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.utils.OtherUtil;
@@ -15,12 +17,18 @@ import java.util.UUID;
 
 public class AnticheatManager {
     public static boolean addVL(Player player, CheckType checkType, CheckResult result) {
+        FalconPlayerHackEvent event=new FalconPlayerHackEvent(player,checkType,result,true);
+        Server.getInstance().getPluginManager().callEvent(event);
+        if(event.isCancelled()){
+            return false;
+        }
+
         CheckCache cache = CheckCache.get(player);
-        int nowVL = -1, maxVL = -1;
+        float nowVL = -1, maxVL = -1;
         boolean shouldFlag = false;
-        switch (checkType.category) {
+        switch (event.checkType.category) {
             case COMBAT: {
-                cache.combatVL += checkType.addVl;
+                cache.combatVL += event.vl;
                 if (cache.combatVL > CheckCategory.COMBAT.warnVl) {
                     warnPlayer(cache);
                 }
@@ -35,7 +43,7 @@ public class AnticheatManager {
                 break;
             }
             case MOVEMENT: {
-                cache.movementVL += checkType.addVl;
+                cache.movementVL += event.vl;
                 if (cache.movementVL > CheckCategory.MOVEMENT.warnVl) {
                     warnPlayer(cache);
                 }
@@ -50,7 +58,7 @@ public class AnticheatManager {
                 break;
             }
             case WORLD: {
-                cache.worldVL += checkType.addVl;
+                cache.worldVL += event.vl;
                 if (cache.worldVL > CheckCategory.WORLD.warnVl) {
                     warnPlayer(cache);
                 }
@@ -65,7 +73,7 @@ public class AnticheatManager {
                 break;
             }
             case MISC: {
-                cache.miscVL += checkType.addVl;
+                cache.miscVL += event.vl;
                 if (cache.miscVL > CheckCategory.MISC.warnVl) {
                     warnPlayer(cache);
                 }
@@ -87,7 +95,7 @@ public class AnticheatManager {
         if (Configuration.consoleDebug) {
             FalconAC.plugin.getLogger().info(cache.player.getName() + " §7failed §b" + checkType.category.name() + "." + checkType.name() + " §fvl:" + nowVL + "/" + maxVL + " " + debugMsg);
         }
-        return (shouldFlag && !checkType.canSmartFlag);
+        return (shouldFlag && !checkType.canSmartFlag && event.flag);
     }
 
     public static void minusPassVl(Player player, CheckCategory category) {
@@ -135,7 +143,13 @@ public class AnticheatManager {
     }
 
     public static void punishPlayer(CheckCache cache, CheckCategory category) {
-        switch (category.result) {
+        FalconPlayerPunishEvent event=new FalconPlayerPunishEvent(cache.player, category.result);
+        Server.getInstance().getPluginManager().callEvent(event);
+        if(event.isCancelled()){
+            return;
+        }
+
+        switch (event.result) {
             case KICK: {
                 if (Configuration.punishBoardcast) {
                     boardcastMessage(Configuration.LANG.KICK.proc(new String[]{cache.player.getName()}));

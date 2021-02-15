@@ -8,7 +8,7 @@ flag: true
 ban: 1440 #minutes,-1 for forever
 punish-boardcast: true
 global:
-  accountForTeleports: 100
+  accountForTeleports: 1000
   smartFlag: true
 checks:
   combat:
@@ -21,7 +21,7 @@ checks:
   movement:
     vl: 700
     vl-minus: 1
-    pass-minus: 2
+    pass-minus: 1
     flag: 200
     warn: 500
     result: 'KICK'
@@ -62,6 +62,10 @@ modules:
   killaura_bot:
     enable: true
     vl: 10
+    rotAble: true
+    rotSpeed: 40
+    rotCount: 10
+    mustHitRot: 50
   criticals:
     enable: true
     vl: 5
@@ -82,11 +86,11 @@ modules:
     # Minimum movement distance needed to flag
     jumpMinimumDistXZ: 0.42
     # Initial speed limit value
-    groundInitialLimit: 0.34
+    groundInitialLimit: 0.42
     # Extra compensation when moving off a ladder up a slab
     vertical:
       baseLimit: 0.6
-      climbableCompensation: 0.04
+      climbableCompensation: 0.16
   flight:
     enable: true
     vl: 15
@@ -101,7 +105,7 @@ modules:
     # Minimum movement distance for the strafe check to be active
     minActivationDistance: 0.04
   waterwalk:
-    enable: true
+    enable: false
     vl: 25
     walkMinimumDistXZ: 0.092
     lungeMinimumDistXZ: 0.098

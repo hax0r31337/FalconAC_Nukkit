@@ -4,14 +4,11 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.AxisAlignedBB;
-import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.SimpleAxisAlignedBB;
 import cn.nukkit.math.Vector3;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.LocationUtil;
-
-import java.util.List;
 
 public class IllegalInteractCheck {
     private static AxisAlignedBB nullBB = new SimpleAxisAlignedBB(0, 0, 0, 0, 0, 0);

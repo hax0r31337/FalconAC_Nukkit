@@ -86,17 +86,19 @@ public class Configuration {
     }
 
     private static void loadCategory(CheckCategory category, JSONObject data) {
-        category.vl = data.getInteger("vl");
-        category.minusVl = data.getInteger("vl-minus");
-        category.passMinus = data.getInteger("pass-minus");
-        category.flagVl = data.getInteger("flag");
-        category.warnVl = data.getInteger("warn");
+        category.vl = data.getFloat("vl");
+        category.minusVl = data.getFloat("vl-minus");
+        category.passMinus = data.getFloat("pass-minus");
+        category.flagVl = data.getFloat("flag");
+        category.warnVl = data.getFloat("warn");
         category.result = PunishResult.valueOf(data.getString("result"));
     }
 
     private static void loadType(CheckType checkType, JSONObject data) {
-        checkType.enable = (boolean) data.remove("enable");
-        checkType.addVl = (int) data.remove("vl");
+        checkType.enable = data.getBoolean("enable");
+        data.remove("enable");
+        checkType.addVl = data.getFloat("vl");
+        data.remove("vl");
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             checkType.otherData.put(entry.getKey(), entry.getValue());
         }
