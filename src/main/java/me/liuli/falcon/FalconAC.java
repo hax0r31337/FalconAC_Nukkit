@@ -5,8 +5,10 @@ import me.liuli.falcon.cache.Configuration;
 import me.liuli.falcon.listener.*;
 import me.liuli.falcon.manager.BanManager;
 import me.liuli.falcon.manager.MinusVL;
+import me.liuli.falcon.utils.OtherUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FalconAC extends PluginBase {
     public static FalconAC plugin;
@@ -17,7 +19,21 @@ public class FalconAC extends PluginBase {
     public void onEnable() {
         plugin = this;
 
-        //load libs
+        //check lib exists
+        if(!this.getServer().getPluginManager().getPlugins().containsKey("FastJSONLib")){
+            //download plugin
+            try {
+                String pluginPath=this.getServer().getPluginPath();
+                OtherUtil.downloadFile("https://github.com/liulihaocai/FJL/releases/download/1.0/FastJSONLib-1.0.jar",
+                        pluginPath,"FastJSONLib-1.0.jar");
+                //then load it
+                this.getServer().getPluginManager()
+                        .loadPlugin(new File(pluginPath,"FastJSONLib-1.0.jar").getPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/data").exists()) {
             new File(FalconAC.plugin.getDataFolder().getPath() + "/data").mkdirs();
         }

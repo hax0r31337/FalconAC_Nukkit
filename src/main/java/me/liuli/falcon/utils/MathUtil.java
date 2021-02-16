@@ -19,4 +19,8 @@ public class MathUtil {
     public static double roundDouble(double value, int scale) {
         return new BigDecimal(value).setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static double xzCalc(double x,double z){
+        return Math.sqrt(x * x + z * z);
+    }
 }

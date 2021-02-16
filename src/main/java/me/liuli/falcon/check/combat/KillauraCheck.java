@@ -5,10 +5,12 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3f;
+import com.alibaba.fastjson.JSONObject;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.LocationUtil;
+import me.liuli.falcon.utils.MathUtil;
 
 public class KillauraCheck {
     public static CheckResult checkAngle(Player player, EntityDamageByEntityEvent event) {
@@ -26,15 +28,16 @@ public class KillauraCheck {
     }
 
     public static CheckResult checkReach(Player player, Entity target) {
-        float allowedReach = player.gamemode != 1 ? CheckType.KILLAURA.otherData.getFloat("reach-common") : CheckType.KILLAURA.otherData.getFloat("reach-creative");
-        if (player.gamemode == 1)
-            allowedReach += 1.5D;
+        JSONObject config = CheckType.KILLAURA.otherData.getJSONObject("reach");
 
-        allowedReach += target.getBoundingBox().getAverageEdgeLength();
-        allowedReach += player.getPing() * CheckType.KILLAURA.otherData.getFloat("reach-ping");
+        float allowedReach = player.gamemode != 1 ? config.getFloat("common") : config.getFloat("creative");
+
+        allowedReach += target.getBoundingBox().getAverageEdgeLength() * config.getFloat("hitbox");
+        allowedReach += MathUtil.xzCalc(target.getMotion().getX(),target.getMotion().getZ()) * config.getFloat("motion");
+        allowedReach += player.getPing() * config.getFloat("ping");
 
         if (target instanceof Player) {
-            allowedReach += ((Player) target).getPing() * CheckType.KILLAURA.otherData.getFloat("reach-ping");
+            allowedReach += ((Player) target).getPing() * config.getFloat("ping");
         }
         // Velocity compensation
         double reachedDistance = target.getLocation().distance(player.getLocation());

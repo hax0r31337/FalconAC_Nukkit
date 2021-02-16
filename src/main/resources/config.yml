@@ -48,16 +48,19 @@ modules:
     smoothMin: 4
     smoothSame: 3
     accuracy:
-      minTimes: 20
+      minTimes: 30
       maxDist: 10
       maxDiff: 8
       minRot: 1
   killaura:
     enable: true
     vl: 7
-    reach-common: 3.6 # Maximum base reach value
-    reach-creative: 3.6 # Maximum base reach value
-    reach-ping: 0.007 # Increase reach value with ping
+    reach:
+      common: 3.6 # Maximum base reach value
+      creative: 5 # Maximum base reach value
+      ping: 0.007 # Increase reach value with ping
+      hitbox: 0.4
+      motion: 1.5
     angle: 70 # Maximum difference in angle from the players view
   killaura_bot:
     enable: true
@@ -140,7 +143,7 @@ modules:
   noswing:
     enable: true
     vl: 10
-    swing: 300 # Maximum delay of swing and attack(ms)
+    swing: 500 # Maximum delay of swing and attack(ms)
   badpackets:
     enable: true
     vl: 20

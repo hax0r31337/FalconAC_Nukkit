@@ -33,6 +33,8 @@ public class CheckCache {
     //timer check
     public long lastMovePacket;
     public double packetBalance = 0;
+    //badpackets check
+    public long lastAnimate;
 
     public CheckCache(Player player) {
         long timeNow = System.currentTimeMillis();
@@ -51,6 +53,7 @@ public class CheckCache {
         lastPlace = timeNow;
         lastSwing = timeNow;
         lastJump = timeNow;
+        lastAnimate = timeNow;
     }
 
     public boolean inTeleportAccount(){

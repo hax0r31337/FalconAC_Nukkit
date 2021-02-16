@@ -1,9 +1,10 @@
 package me.liuli.falcon.check.misc;
 
 import cn.nukkit.Player;
-import cn.nukkit.network.protocol.DataPacket;
-import cn.nukkit.network.protocol.MovePlayerPacket;
-import cn.nukkit.network.protocol.PlayerActionPacket;
+import cn.nukkit.inventory.PlayerInventory;
+import cn.nukkit.item.Item;
+import cn.nukkit.network.protocol.*;
+import cn.nukkit.network.protocol.types.NetworkInventoryAction;
 import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.manager.AnticheatManager;
 import me.liuli.falcon.manager.CheckResult;
@@ -17,11 +18,28 @@ public class BadPacketsCheck {
         }else if(packet instanceof PlayerActionPacket){
             if (AnticheatManager.canCheckPlayer(player, CheckType.BADPACKETS))
                 return checkAction(player,(PlayerActionPacket) packet);
-        }/*else if(packet instanceof InventoryTransactionPacket){
+        }/*else if(packet instanceof AnimatePacket) {
+            if (AnticheatManager.canCheckPlayer(player, CheckType.BADPACKETS))
+                return checkAnimate(player);
+        }else if(packet instanceof InventoryTransactionPacket){
             if (AnticheatManager.canCheckPlayer(player, CheckType.BADPACKETS)) {
                 return checkInv(player, (InventoryTransactionPacket) packet);
             }
         }*/
+        return CheckResult.PASSED;
+    }
+
+    private static CheckResult checkAnimate(Player player){
+        CheckCache checkCache = CheckCache.get(player);
+        if(checkCache==null) return CheckResult.PASSED;
+
+        long lastAnimate=checkCache.lastAnimate;
+        checkCache.lastAnimate=System.currentTimeMillis();
+
+        if((System.currentTimeMillis() - lastAnimate) < CheckType.BADPACKETS.otherData.getInteger("animateDelay")){
+            return new CheckResult("animate too fast(time="+(System.currentTimeMillis() - checkCache.lastAnimate)+")");
+        }
+
         return CheckResult.PASSED;
     }
 
@@ -52,21 +70,21 @@ public class BadPacketsCheck {
         return CheckResult.PASSED;
     }
 
-//    private static CheckResult checkInv(Player player, InventoryTransactionPacket packet){
-//        if(!CheckType.BADPACKETS.otherData.getBoolean("inventory"))return CheckResult.PASSED;
-//        PlayerInventory inventory=player.getInventory();
-//        for(NetworkInventoryAction action:packet.actions){
-//            if(action.windowId==0){
-//                if(action.inventorySlot<0||action.inventorySlot>40){
-//                    return new CheckResult("Trying move a item from unknown slot");
-//                }
-//                Item realFromItem=inventory.getItem(action.inventorySlot);
-//                Item packetFromItem=action.oldItem;
-//                if(!realFromItem.equals(packetFromItem)){
-//                    return new CheckResult("Trying move a item not exists(packet="+packetFromItem.getName()+",real="+realFromItem+")");
-//                }
-//            }
-//        }
-//        return CheckResult.PASSED;
-//    }
+    private static CheckResult checkInv(Player player, InventoryTransactionPacket packet){
+        if(!CheckType.BADPACKETS.otherData.getBoolean("inventory"))return CheckResult.PASSED;
+        PlayerInventory inventory=player.getInventory();
+        for(NetworkInventoryAction action:packet.actions){
+            if(action.windowId==0){
+                if(action.inventorySlot<0||action.inventorySlot>40){
+                    return new CheckResult("Trying move a item from unknown slot");
+                }
+                Item realFromItem=inventory.getItem(action.inventorySlot);
+                Item packetFromItem=action.oldItem;
+                if(!realFromItem.equals(packetFromItem)){
+                    return new CheckResult("Trying move a item not exists(packet="+packetFromItem.getName()+",real="+realFromItem+")");
+                }
+            }
+        }
+        return CheckResult.PASSED;
+    }
 }

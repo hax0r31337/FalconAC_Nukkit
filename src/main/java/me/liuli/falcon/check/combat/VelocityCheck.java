@@ -6,6 +6,7 @@ import me.liuli.falcon.cache.CheckCache;
 import me.liuli.falcon.cache.MovementCache;
 import me.liuli.falcon.manager.CheckResult;
 import me.liuli.falcon.manager.CheckType;
+import me.liuli.falcon.utils.MathUtil;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class VelocityCheck {
@@ -20,7 +21,7 @@ public class VelocityCheck {
 
         if(movementCache.inVelocity()) {
             //y motion
-            if(movementCache.topSolid) {
+            if(!movementCache.topSolid) {
                 if (movementCache.velocityY > 0) {
                     double yPercentage = (movementCache.motionY / movementCache.velocityY) * 100;
                     if (yPercentage < 0)
@@ -36,9 +37,9 @@ public class VelocityCheck {
                 movementCache.resetVelocity();
             }
             //xz motion
-            if(MoveUtil.isNearSolid(player.getPosition()) || MoveUtil.isNearSolid(player.getPosition().add(0,1,0))) {
+            if(!(MoveUtil.isNearSolid(player.getPosition()) || MoveUtil.isNearSolid(player.getPosition().add(0,1,0)))) {
                 if (movementCache.velocityX != 0 && movementCache.velocityZ != 0) {
-                    double xzPercentage = (xzCalc(movementCache.motionX, movementCache.motionZ) / xzCalc(movementCache.motionX, movementCache.velocityZ)) * 100;
+                    double xzPercentage = (MathUtil.xzCalc(movementCache.motionX, movementCache.motionZ) / MathUtil.xzCalc(movementCache.motionX, movementCache.velocityZ)) * 100;
                     if (xzPercentage < 0)
                         xzPercentage = 0;
 
@@ -63,9 +64,5 @@ public class VelocityCheck {
 //            targetPos.add(movementCache.velocityX,movementCache.velocityY,movementCache.velocityZ);
 //            player.teleport(targetPos);
 //        }
-    }
-
-    private static double xzCalc(double x,double z){
-        return Math.sqrt(x * x + z * z);
     }
 }

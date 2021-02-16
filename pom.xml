@@ -6,7 +6,7 @@
 
     <groupId>me.liuli.falcon</groupId>
     <artifactId>FalconAC</artifactId>
-    <version>1.3-Pre2</version>
+    <version>1.3</version>
     <properties>
         <java.version>8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
