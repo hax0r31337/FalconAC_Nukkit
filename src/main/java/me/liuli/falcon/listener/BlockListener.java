@@ -30,7 +30,7 @@ public class BlockListener implements Listener {
             }
         }
         if (shouldFlag) {
-            if(Configuration.flag) {
+            if (Configuration.flag) {
                 event.setCancelled();
             }
             return;
@@ -48,7 +48,7 @@ public class BlockListener implements Listener {
             }
         }
         if (shouldFlag) {
-            if(Configuration.flag) {
+            if (Configuration.flag) {
                 event.setCancelled();
             }
             return;

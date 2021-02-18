@@ -10,7 +10,7 @@ import me.liuli.falcon.other.BlockRelative;
 public class MoveUtil {
     public static final double JUMP_MOTION_Y = 0.41999998688697815;
 
-    public static boolean couldBeOnBlock(Location location,int id) {
+    public static boolean couldBeOnBlock(Location location, int id) {
         return isNearBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.01D,
                 location.getZ()), location.getLevel()).getLevelBlock(), id)
                 || isNearBlock(Position.fromObject(new Vector3(fixXAxis(location.getX()), location.getY() - 0.51D,

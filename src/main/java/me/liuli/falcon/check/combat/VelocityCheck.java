@@ -10,18 +10,18 @@ import me.liuli.falcon.utils.MathUtil;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class VelocityCheck {
-    public static CheckResult runCheck(Player player){
+    public static CheckResult runCheck(Player player) {
         CheckCache cache = CheckCache.get(player);
         if (cache == null)
             return CheckResult.PASSED;
 
-        MovementCache movementCache=cache.movementCache;
+        MovementCache movementCache = cache.movementCache;
         if (MoveUtil.isNearBlock(player, Block.STILL_WATER) || player.getAllowFlight())
             return CheckResult.PASSED;
 
-        if(movementCache.inVelocity()) {
+        if (movementCache.inVelocity()) {
             //y motion
-            if(!movementCache.topSolid) {
+            if (!movementCache.topSolid) {
                 if (movementCache.velocityY > 0) {
                     double yPercentage = (movementCache.motionY / movementCache.velocityY) * 100;
                     if (yPercentage < 0)
@@ -33,11 +33,11 @@ public class VelocityCheck {
                     // Reset expected Y motion
                     movementCache.velocityY = 0;
                 }
-            }else{
+            } else {
                 movementCache.resetVelocity();
             }
             //xz motion
-            if(!(MoveUtil.isNearSolid(player.getPosition()) || MoveUtil.isNearSolid(player.getPosition().add(0,1,0)))) {
+            if (!(MoveUtil.isNearSolid(player.getPosition()) || MoveUtil.isNearSolid(player.getPosition().add(0, 1, 0)))) {
                 if (movementCache.velocityX != 0 && movementCache.velocityZ != 0) {
                     double xzPercentage = (MathUtil.xzCalc(movementCache.motionX, movementCache.motionZ) / MathUtil.xzCalc(movementCache.motionX, movementCache.velocityZ)) * 100;
                     if (xzPercentage < 0)
@@ -50,14 +50,14 @@ public class VelocityCheck {
                     movementCache.velocityX = 0;
                     movementCache.velocityZ = 0;
                 }
-            }else{
+            } else {
                 movementCache.resetVelocity();
             }
         }
         return CheckResult.PASSED;
     }
 
-    private static void doFlag(Player player,MovementCache movementCache){
+    private static void doFlag(Player player, MovementCache movementCache) {
         movementCache.resetVelocity();
 //        if(Configuration.smartFlag){
 //            Position targetPos=player.getPosition().clone();

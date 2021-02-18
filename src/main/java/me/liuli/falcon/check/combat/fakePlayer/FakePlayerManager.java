@@ -49,7 +49,7 @@ public class FakePlayerManager {
                 }
                 updateBot(player);
             }
-        }, 500, 100);
+        }, 500, 50);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -66,11 +66,11 @@ public class FakePlayerManager {
             UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) inventoryTransactionPacket.transactionData;
             entityId = useItemOnEntityData.entityRuntimeId;
         }
-        FakePlayer fakePlayer=CheckCache.get(event.getPlayer()).fakePlayer;
+        FakePlayer fakePlayer = CheckCache.get(event.getPlayer()).fakePlayer;
         if (entityId == fakePlayer.getEntityId()) {
             FakePlayerManager.botHurt(event.getPlayer());
-            if(!(Math.abs(fakePlayer.rot) < CheckType.KA_BOT.otherData.getInteger("mustHitRot"))) {
-                return new CheckResult("Trying to attack a fakeplayer(rot="+Math.abs(fakePlayer.rot)+")");
+            if (!(Math.abs(fakePlayer.rot) < CheckType.KA_BOT.otherData.getInteger("mustHitRot"))) {
+                return new CheckResult("Trying to attack a fakeplayer(rot=" + Math.abs(fakePlayer.rot) + ")");
             }
         }
         return CheckResult.PASSED;
@@ -102,17 +102,17 @@ public class FakePlayerManager {
         if ((new Date().getTime() - CheckCache.get(player).lastHurt) < 15000) {
             double rot = location.yaw + fakePlayer.rot, y = location.y + 1.62;
 
-            if(fakePlayer.inRotate){
-                CheckCache.get(player).lastHurt=System.currentTimeMillis();
+            if (fakePlayer.inRotate) {
+                CheckCache.get(player).lastHurt = System.currentTimeMillis();
 
-                fakePlayer.rot-=CheckType.KA_BOT.otherData.getInteger("rotSpeed");
-                if(fakePlayer.rot<=-180){
-                    fakePlayer.rot=180;
+                fakePlayer.rot -= CheckType.KA_BOT.otherData.getInteger("rotSpeed");
+                if (fakePlayer.rot <= -180) {
+                    fakePlayer.rot = 180;
                     fakePlayer.rotCircle++;
                 }
-                if(fakePlayer.rotCircle>=CheckType.KA_BOT.otherData.getInteger("rotCount")){
-                    fakePlayer.inRotate=false;
-                    fakePlayer.rotCircle=0;
+                if (fakePlayer.rotCircle >= CheckType.KA_BOT.otherData.getInteger("rotCount")) {
+                    fakePlayer.inRotate = false;
+                    fakePlayer.rotCircle = 0;
                 }
             }
 

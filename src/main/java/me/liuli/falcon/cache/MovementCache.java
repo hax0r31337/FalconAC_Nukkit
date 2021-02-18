@@ -82,7 +82,7 @@ public class MovementCache {
     // Elytra effect ticks
     public int elytraEffectTicks;
     public long velocityTime = 0;
-    public double velocityX,velocityY,velocityZ,velocityStopTime = 0;
+    public double velocityX, velocityY, velocityZ, velocityStopTime = 0;
     // Amount of ticks a player is sneaking
     public int sneakingTicks;
     // Ticks counter after being near a liquid
@@ -98,25 +98,25 @@ public class MovementCache {
     // Time of last update
     public long lastUpdate;
 
-    public void handleVelocity(Vector3 motion){
+    public void handleVelocity(Vector3 motion) {
         this.velocityTime = System.currentTimeMillis();
         this.velocityX = motion.getX();
         this.velocityY = motion.getY();
         this.velocityZ = motion.getZ();
-        this.velocityStopTime = (((velocityX+velocityZ+velocityY) / 2 + 1) * 750);
+        this.velocityStopTime = (((velocityX + velocityZ + velocityY) + 1) * 750);
     }
 
-    public void resetVelocity(){
+    public void resetVelocity() {
         this.velocityX = 0;
         this.velocityY = 0;
         this.velocityZ = 0;
     }
 
-    public boolean inVelocity(){
-        return (velocityTime+velocityStopTime)>System.currentTimeMillis();
+    public boolean inVelocity() {
+        return (velocityTime + velocityStopTime) > System.currentTimeMillis();
     }
 
-    public void handle(Player player, Location from, Location to, Distance distance,boolean onGround) {
+    public void handle(Player player, Location from, Location to, Distance distance, boolean onGround) {
         this.lastOnGround = this.onGround;
         this.onGround = onGround;
 
@@ -142,7 +142,7 @@ public class MovementCache {
             this.groundTicks++;
         }
 
-        if (MoveUtil.couldBeOnBlock(to,Block.ICE)) {
+        if (MoveUtil.couldBeOnBlock(to, Block.ICE)) {
             this.iceTicks++;
             this.iceInfluenceTicks = 60;
         } else {
@@ -151,7 +151,7 @@ public class MovementCache {
                 this.iceInfluenceTicks--;
         }
 
-        if (MoveUtil.couldBeOnBlock(to,Block.SLIME_BLOCK)) {
+        if (MoveUtil.couldBeOnBlock(to, Block.SLIME_BLOCK)) {
             this.slimeTicks++;
             this.slimeInfluenceTicks = 40;
         } else {
@@ -196,9 +196,9 @@ public class MovementCache {
         this.lastMotionX = this.motionX;
         this.lastMotionY = this.motionY;
         this.lastMotionZ = this.motionZ;
-        this.motionX = MathUtil.roundDouble(to.getX() - from.getX(),4);
-        this.motionY = MathUtil.roundDouble(to.getY() - from.getY(),4);
-        this.motionZ = MathUtil.roundDouble(to.getZ() - from.getZ(),4);
+        this.motionX = MathUtil.roundDouble(to.getX() - from.getX(), 4);
+        this.motionY = MathUtil.roundDouble(to.getY() - from.getY(), 4);
+        this.motionZ = MathUtil.roundDouble(to.getZ() - from.getZ(), 4);
 
         Location top = to.clone().add(0, 2, 0);
         this.topSolid = top.getLevelBlock().isSolid();

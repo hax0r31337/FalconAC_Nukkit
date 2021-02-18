@@ -12,10 +12,10 @@ import me.liuli.falcon.check.global.Collision;
 import me.liuli.falcon.manager.CheckResult;
 
 public class NoClipCheck {
-    public static CheckResult check(Player player,Location from) {
-        Block block= Collision.getCollisionBlock(player.getBoundingBox(),from);
+    public static CheckResult check(Player player, Location from) {
+        Block block = Collision.getCollisionBlock(player.getBoundingBox(), from);
 
-        if(block!=null){
+        if (block != null) {
             //update block for lagging player
             UpdateBlockPacket packet = new UpdateBlockPacket();
             packet.x = block.getFloorX();
@@ -25,10 +25,10 @@ public class NoClipCheck {
             packet.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
             player.dataPacket(packet);
 
-            if(Configuration.smartFlag){
-                for(int i = (int) from.y+2; i<255; i++){
-                    Position pos=Position.fromObject(new Vector3(from.x,i, from.z),from.level);
-                    if(pos.getLevelBlock().getId()==Block.AIR){
+            if (Configuration.smartFlag) {
+                for (int i = (int) from.y + 2; i < 255; i++) {
+                    Position pos = Position.fromObject(new Vector3(from.x, i, from.z), from.level);
+                    if (pos.getLevelBlock().getId() == Block.AIR) {
                         player.teleport(pos);
                         return new CheckResult("Trying to move into " + block.getName());
                     }

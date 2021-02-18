@@ -26,11 +26,11 @@ public class FakePlayer {
     public Item chestEquip = new Item(0, 0);
     public Item legEquip = new Item(0, 0);
     public Item bootEquip = new Item(0, 0);
-    private Position lastPos = new Position(0, 0, 0);
     //rotate
     public boolean inRotate = false;
     public int rot = 180;
     public int rotCircle = 0;
+    private Position lastPos = new Position(0, 0, 0);
 
     public FakePlayer(String name, Position pos) {
         Random random = new Random();

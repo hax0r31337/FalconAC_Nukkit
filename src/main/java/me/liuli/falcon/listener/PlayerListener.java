@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
             }
         }
         if (shouldFlag) {
-            if(Configuration.flag) {
+            if (Configuration.flag) {
                 event.setCancelled();
             }
             return;
@@ -57,40 +57,40 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Player player=event.getPlayer();
-        CheckCache checkCache=CheckCache.get(player);
-        if(checkCache==null) {
+        Player player = event.getPlayer();
+        CheckCache checkCache = CheckCache.get(player);
+        if (checkCache == null) {
             return;
         }
 
         boolean shouldFlag = false;
 
         if (AnticheatManager.canCheckPlayer(player, CheckType.AIMBOT)) {
-            CheckResult result = AimbotCheck.check(player, event.getFrom(),event.getTo());
+            CheckResult result = AimbotCheck.check(player, event.getFrom(), event.getTo());
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(player, CheckType.AIMBOT, result);
             }
         }
         if (AnticheatManager.canCheckPlayer(player, CheckType.NOCLIP)) {
-            CheckResult result = NoClipCheck.check(player,event.getFrom());
+            CheckResult result = NoClipCheck.check(player, event.getFrom());
             if (result.failed()) {
                 shouldFlag = AnticheatManager.addVL(player, CheckType.NOCLIP, result);
             }
         }
 
-        if (shouldFlag&&Configuration.flag) {
+        if (shouldFlag && Configuration.flag) {
             event.setCancelled();
         }
 
-        if((System.currentTimeMillis()-checkCache.lastPacketFlag)>100){
+        if ((System.currentTimeMillis() - checkCache.lastPacketFlag) > 100) {
             AnticheatManager.minusPassVl(player, CheckCategory.MOVEMENT);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerTP(PlayerTeleportEvent event){
-        CheckCache checkCache=CheckCache.get(event.getPlayer());
-        if(checkCache==null) {
+    public void onPlayerTP(PlayerTeleportEvent event) {
+        CheckCache checkCache = CheckCache.get(event.getPlayer());
+        if (checkCache == null) {
             return;
         }
         checkCache.teleportTime = System.currentTimeMillis();

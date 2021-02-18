@@ -10,7 +10,7 @@ import me.liuli.falcon.manager.CheckType;
 import me.liuli.falcon.utils.MoveUtil;
 
 public class WaterWalkCheck {
-    public static CheckResult runCheck(Player player,boolean onGround) {
+    public static CheckResult runCheck(Player player, boolean onGround) {
         CheckCache cache = CheckCache.get(player);
         if (cache == null)
             return CheckResult.PASSED;

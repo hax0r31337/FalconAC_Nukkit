@@ -7,6 +7,7 @@ debug:
 flag: true
 ban: 1440 #minutes,-1 for forever
 punish-boardcast: true
+punish-delay: 1000
 global:
   accountForTeleports: 1000
   smartFlag: true
@@ -66,7 +67,7 @@ modules:
     enable: true
     vl: 10
     rotAble: true
-    rotSpeed: 40
+    rotSpeed: 20
     rotCount: 10
     mustHitRot: 50
   criticals:
@@ -89,11 +90,11 @@ modules:
     # Minimum movement distance needed to flag
     jumpMinimumDistXZ: 0.42
     # Initial speed limit value
-    groundInitialLimit: 0.42
+    groundInitialLimit: 0.37
     # Extra compensation when moving off a ladder up a slab
     vertical:
-      baseLimit: 0.6
-      climbableCompensation: 0.16
+      baseLimit: 0.45
+      climbableCompensation: 0.31
   flight:
     enable: true
     vl: 15

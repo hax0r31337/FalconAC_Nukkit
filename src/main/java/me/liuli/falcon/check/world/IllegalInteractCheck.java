@@ -30,8 +30,8 @@ public class IllegalInteractCheck {
     public static CheckResult rayTraceCheck(double x, double y, double z, float yaw, float pitch,
                                             int blockX, int blockY, int blockZ) {
         Location useLoc = new Location();
-        useLoc.pitch=pitch;
-        useLoc.yaw=yaw;
+        useLoc.pitch = pitch;
+        useLoc.yaw = yaw;
         Vector3 direction = LocationUtil.getDirection(useLoc);
         return CheckResult.PASSED;
     }

@@ -25,11 +25,11 @@ public class SpeedCheck {
         double distanceXZ = movementCache.distanceXZ;
         boolean boxedIn = movementCache.topSolid && movementCache.bottomSolid;
 
-        float movementSpeed=player.getMovementSpeed() * 2F;
+        float movementSpeed = player.getMovementSpeed() * 2F;
 
         // AirSpeed
         if (movementCache.airTicks > 1 && movementCache.elytraEffectTicks <= 0 &&
-                !MoveUtil.isNearBlock(player,Block.LADDER)) {
+                !MoveUtil.isNearBlock(player, Block.LADDER)) {
             double multiplier = 0.985D;
             double predict = 0.4 * Math.pow(multiplier, movementCache.airTicks + 1);
             // Prevents false when falling from great heights
@@ -37,7 +37,7 @@ public class SpeedCheck {
                 predict = Math.max(0.08, predict);
             double limit = CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("baseLimit");
             // jump may cause false result
-            if((System.currentTimeMillis()-cache.lastJump)<500)
+            if ((System.currentTimeMillis() - cache.lastJump) < 500)
                 limit += CheckType.SPEED.otherData.getJSONObject("airSpeed").getDouble("jumpMultiplier");
 
             // Adjust for ice
@@ -48,7 +48,7 @@ public class SpeedCheck {
                     iceIncrement = 0.18D;
                 if (boxedIn)
                     iceIncrement += 0.45D;
-                if (!MoveUtil.couldBeOnBlock(movingTowards,Block.ICE))
+                if (!MoveUtil.couldBeOnBlock(movingTowards, Block.ICE))
                     iceIncrement *= 2.5D;
                 predict += iceIncrement;
             }
@@ -108,7 +108,7 @@ public class SpeedCheck {
 
                 if (distanceXZ >= minimumDistXZ || movementCache.lastDistanceXZ >= minimumDistXZ) {
                     return new CheckResult("had unexpected jumping behaviour (dXZ=" + distanceXZ + ", lXZ="
-                                    + movementCache.lastDistanceXZ + ")");
+                            + movementCache.lastDistanceXZ + ")");
                 }
             }
         }
@@ -140,7 +140,7 @@ public class SpeedCheck {
                 limit *= 1.08D;
             if (movementCache.iceInfluenceTicks >= 50) {
                 // When moving off ice
-                if (!MoveUtil.couldBeOnBlock(movingTowards,Block.ICE))
+                if (!MoveUtil.couldBeOnBlock(movingTowards, Block.ICE))
                     limit *= 2.5D;
                 else {
                     // When boxed in and spamming space for boost
@@ -151,14 +151,14 @@ public class SpeedCheck {
                 }
             }
 
-            if (MoveUtil.isNearBlock(movingTowards,Block.BED_BLOCK)
-                    || MoveUtil.isNearBlock(movingTowards.clone().add(0, -0.5, 0),Block.BED_BLOCK))
+            if (MoveUtil.isNearBlock(movingTowards, Block.BED_BLOCK)
+                    || MoveUtil.isNearBlock(movingTowards.clone().add(0, -0.5, 0), Block.BED_BLOCK))
                 limit *= 2.0D;
             // Adjust for custom walk speed
             limit += (movementSpeed - 0.2) * 2.0D;
             // Prevent NoWeb
             // TODO config
-            if (MoveUtil.isNearBlock(player,Block.COBWEB))
+            if (MoveUtil.isNearBlock(player, Block.COBWEB))
                 limit *= 0.65D;
             // Sneak speed check
             // TODO config
@@ -200,7 +200,7 @@ public class SpeedCheck {
     private static double getMaxAcceptableMotionY(Player player, boolean nearBed, boolean onground, boolean halfMovement) {
         double base = (nearBed ? 0.6625 : ((halfMovement) ? 0.7 : CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("baseLimit")));
 
-        if (!onground && MoveUtil.isNearSolid(player.getPosition()))
+        if (MoveUtil.isNearSolid(player.getPosition()))
             base += CheckType.SPEED.otherData.getJSONObject("vertical").getDouble("climbableCompensation");
 
         if (player.hasEffect(Effect.JUMP))

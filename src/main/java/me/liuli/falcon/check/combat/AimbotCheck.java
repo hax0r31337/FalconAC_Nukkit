@@ -34,16 +34,16 @@ public class AimbotCheck {
             }
             cache.lastRot = moveLength;
             if (cache.sameRot > smoothSame) {
-                cache.fakePlayer.inRotate=true;
+                cache.fakePlayer.inRotate = true;
                 return new CheckResult("Rotate too smooth(speed=" + moveLength + ",times=" + cache.sameRot + ")");
             }
         }
 
         //aimAccuracy
         {
-            boolean increased=false;
+            boolean increased = false;
             JSONObject checkConfig = CheckType.AIMBOT.otherData.getJSONObject("accuracy");
-            if(moveLength>checkConfig.getInteger("minRot")) {
+            if (moveLength > checkConfig.getInteger("minRot")) {
                 for (Player viewPlayer : player.getViewers().values()) {
                     if (player.distance(viewPlayer) < checkConfig.getInteger("maxDist")) {
                         double yawDifference = KillauraCheck.calculateYawDifference(player.getLocation(), viewPlayer.getLocation());
@@ -53,7 +53,7 @@ public class AimbotCheck {
                                 cache.onAimTime++;
                                 increased = true;
                                 if (cache.onAimTime > checkConfig.getInteger("minTimes")) {
-                                    cache.fakePlayer.inRotate=true;
+                                    cache.fakePlayer.inRotate = true;
                                     return new CheckResult("aiming too accuracy(times=" + cache.onAimTime + ",diff=" + angleDifference + ")");
                                 }
                             } else {
@@ -64,7 +64,7 @@ public class AimbotCheck {
                     }
                 }
                 if (!increased) {
-                    cache.onAimTime=Math.max(0,cache.onAimTime-2);
+                    cache.onAimTime = Math.max(0, cache.onAimTime - 2);
                 }
             }
         }

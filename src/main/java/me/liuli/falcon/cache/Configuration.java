@@ -12,12 +12,11 @@ import java.util.Map;
 
 public class Configuration {
     public static boolean checkOp, consoleDebug, playerDebug, flag, punishBoardcast;
-    public static int ban;
-    private static JSONObject configJSON, langJSON;
-
+    public static int ban, punishDelay;
     //global values
     public static int accountForTeleports;
     public static boolean smartFlag;
+    private static JSONObject configJSON, langJSON;
 
     public static void loadConfig() {
         if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/lang.yml").exists()) {
@@ -48,6 +47,7 @@ public class Configuration {
         flag = configJSON.getBoolean("flag");
         ban = configJSON.getInteger("ban");
         punishBoardcast = configJSON.getBoolean("punish-boardcast");
+        punishDelay = configJSON.getInteger("punish-delay");
 
         //load checks
         loadCategory(CheckCategory.COMBAT, checksJSON.getJSONObject("combat"));
@@ -76,13 +76,13 @@ public class Configuration {
         loadType(CheckType.NOSWING, moduleJSON.getJSONObject("noswing"));
         loadType(CheckType.BADPACKETS, moduleJSON.getJSONObject("badpackets"));
 
-        JSONObject globalValues=configJSON.getJSONObject("global");
-        accountForTeleports=globalValues.getInteger("accountForTeleports");
-        smartFlag=globalValues.getBoolean("smartFlag");
+        JSONObject globalValues = configJSON.getJSONObject("global");
+        accountForTeleports = globalValues.getInteger("accountForTeleports");
+        smartFlag = globalValues.getBoolean("smartFlag");
 
         //register smartFlag
-        CheckType.VELOCITY.canSmartFlag=true;
-        CheckType.NOCLIP.canSmartFlag=true;
+        CheckType.VELOCITY.canSmartFlag = true;
+        CheckType.NOCLIP.canSmartFlag = true;
     }
 
     private static void loadCategory(CheckCategory category, JSONObject data) {

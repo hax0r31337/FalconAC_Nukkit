@@ -17,9 +17,9 @@ import java.util.UUID;
 
 public class AnticheatManager {
     public static boolean addVL(Player player, CheckType checkType, CheckResult result) {
-        FalconPlayerHackEvent event=new FalconPlayerHackEvent(player,checkType,result,true);
+        FalconPlayerHackEvent event = new FalconPlayerHackEvent(player, checkType, result, true);
         Server.getInstance().getPluginManager().callEvent(event);
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return false;
         }
 
@@ -88,7 +88,7 @@ public class AnticheatManager {
                 break;
             }
         }
-        String debugMsg=result.message+" (tps="+Server.getInstance().getTicksPerSecond()+",ping="+player.getPing()+")";
+        String debugMsg = result.message + " (tps=" + Server.getInstance().getTicksPerSecond() + ",ping=" + player.getPing() + ")";
         if (Configuration.playerDebug) {
             cache.player.sendMessage(Configuration.LANG.DEBUG.proc(new String[]{cache.player.getName(), checkType.category.name() + "." + checkType.name(), String.valueOf(nowVL), String.valueOf(maxVL), debugMsg}));
         }
@@ -143,34 +143,43 @@ public class AnticheatManager {
     }
 
     public static void punishPlayer(CheckCache cache, CheckCategory category) {
-        FalconPlayerPunishEvent event=new FalconPlayerPunishEvent(cache.player, category.result);
-        Server.getInstance().getPluginManager().callEvent(event);
-        if(event.isCancelled()){
-            return;
-        }
+        PacketBlockManager.addBlock(cache.player);
 
-        switch (event.result) {
-            case KICK: {
-                if (Configuration.punishBoardcast) {
-                    boardcastMessage(Configuration.LANG.KICK.proc(new String[]{cache.player.getName()}));
-                }
-                kick(cache.player, Configuration.LANG.KICK_REASON.proc());
-                break;
-            }
-            case BAN: {
-                if (Configuration.punishBoardcast) {
-                    boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                PacketBlockManager.removeBlock(cache.player);
+
+                FalconPlayerPunishEvent event = new FalconPlayerPunishEvent(cache.player, category.result);
+                Server.getInstance().getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
                 }
 
-                long banTime;
-                if(Configuration.ban==-1){
-                    banTime=-1;
-                }else{
-                    banTime=OtherUtil.getTime() + (Configuration.ban * 60L);
+                switch (event.result) {
+                    case KICK: {
+                        if (Configuration.punishBoardcast) {
+                            boardcastMessage(Configuration.LANG.KICK.proc(new String[]{cache.player.getName()}));
+                        }
+                        kick(cache.player, Configuration.LANG.KICK_REASON.proc());
+                        break;
+                    }
+                    case BAN: {
+                        if (Configuration.punishBoardcast) {
+                            boardcastMessage(Configuration.LANG.BAN.proc(new String[]{cache.player.getName()}));
+                        }
+
+                        long banTime;
+                        if (Configuration.ban == -1) {
+                            banTime = -1;
+                        } else {
+                            banTime = OtherUtil.getTime() + (Configuration.ban * 60L);
+                        }
+                        BanManager.addBan(cache.player, banTime);
+                    }
                 }
-                BanManager.addBan(cache.player, banTime);
             }
-        }
+        }, Configuration.punishDelay);
     }
 
     public static boolean canCheckPlayer(Player player, CheckType checkType) {
@@ -181,16 +190,16 @@ public class AnticheatManager {
         return checkType.enable && isOp;
     }
 
-    public static void kick(Player player,String message){
-        DisconnectPacket disconnectPacket=new DisconnectPacket();
-        disconnectPacket.hideDisconnectionScreen=false;
-        disconnectPacket.message=message;
+    public static void kick(Player player, String message) {
+        DisconnectPacket disconnectPacket = new DisconnectPacket();
+        disconnectPacket.hideDisconnectionScreen = false;
+        disconnectPacket.message = message;
         player.dataPacket(disconnectPacket);
 
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                player.kick(message,false);
+                player.kick(message, false);
             }
         }, 1000);
     }

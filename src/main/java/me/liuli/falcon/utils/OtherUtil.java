@@ -98,39 +98,39 @@ public class OtherUtil {
         return (float) Math.acos(dot);
     }
 
-    public static void downloadFile(String urlStr,String filePath,String fileName) throws IOException {
-        FalconAC.plugin.getLogger().info("DOWNLOADING "+fileName+" FROM URL: "+urlStr);
+    public static void downloadFile(String urlStr, String filePath, String fileName) throws IOException {
+        FalconAC.plugin.getLogger().info("DOWNLOADING " + fileName + " FROM URL: " + urlStr);
 
-        long startTime=System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         File jar = new File(filePath, fileName);
-        if (jar.exists()){
+        if (jar.exists()) {
             return;
         }
-        File tmp = new File(jar.getPath()+".tmp");
+        File tmp = new File(jar.getPath() + ".tmp");
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(3*1000);
+        conn.setConnectTimeout(3 * 1000);
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36");
         InputStream is = conn.getInputStream();
-        int totalSize = conn.getContentLength(),nowSize=0,lastSize=-1;
+        int totalSize = conn.getContentLength(), nowSize = 0, lastSize = -1;
         FileOutputStream os = new FileOutputStream(tmp);
         byte[] buf = new byte[4096];
         int size = 0;
-        while((size = is.read(buf)) != -1) {
+        while ((size = is.read(buf)) != -1) {
             os.write(buf, 0, size);
-            nowSize+=size;
-            int progcess=100*nowSize/totalSize;
-            if(progcess%5==0&&progcess!=lastSize){
-                FalconAC.plugin.getLogger().info("DOWNLOADING "+fileName+" PROCESS:"+(100*nowSize/totalSize)+"%");
-                lastSize=progcess;
+            nowSize += size;
+            int progcess = 100 * nowSize / totalSize;
+            if (progcess % 5 == 0 && progcess != lastSize) {
+                FalconAC.plugin.getLogger().info("DOWNLOADING " + fileName + " PROCESS:" + (100 * nowSize / totalSize) + "%");
+                lastSize = progcess;
             }
         }
         is.close();
         os.flush();
         os.close();
-        if(jar.exists())
+        if (jar.exists())
             jar.delete();
         tmp.renameTo(jar);
-        FalconAC.plugin.getLogger().info("DOWNLOAD "+fileName+" COMPLETE("+((System.currentTimeMillis()-startTime)/1000)+"s)");
+        FalconAC.plugin.getLogger().info("DOWNLOAD " + fileName + " COMPLETE(" + ((System.currentTimeMillis() - startTime) / 1000) + "s)");
     }
 }

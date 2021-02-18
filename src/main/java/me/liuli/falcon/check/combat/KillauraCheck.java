@@ -20,7 +20,7 @@ public class KillauraCheck {
             double yawDifference = calculateYawDifference(player.getLocation(), entity.getLocation());
             double angleDifference = Math.abs(180 - Math.abs(Math.abs(yawDifference - player.yaw) - 180));
             if (Math.round(angleDifference) > CheckType.KILLAURA.otherData.getInteger("angle")) {
-                CheckCache.get(player).fakePlayer.inRotate=true;
+                CheckCache.get(player).fakePlayer.inRotate = true;
                 return new CheckResult("tried to attack from an illegal angle (angle=" + Math.round(angleDifference) + ")");
             }
         }
@@ -33,7 +33,7 @@ public class KillauraCheck {
         float allowedReach = player.gamemode != 1 ? config.getFloat("common") : config.getFloat("creative");
 
         allowedReach += target.getBoundingBox().getAverageEdgeLength() * config.getFloat("hitbox");
-        allowedReach += MathUtil.xzCalc(target.getMotion().getX(),target.getMotion().getZ()) * config.getFloat("motion");
+        allowedReach += MathUtil.xzCalc(target.getMotion().getX(), target.getMotion().getZ()) * config.getFloat("motion");
         allowedReach += player.getPing() * config.getFloat("ping");
 
         if (target instanceof Player) {
@@ -42,7 +42,7 @@ public class KillauraCheck {
         // Velocity compensation
         double reachedDistance = target.getLocation().distance(player.getLocation());
         if (reachedDistance > allowedReach) {
-            CheckCache.get(player).fakePlayer.inRotate=true;
+            CheckCache.get(player).fakePlayer.inRotate = true;
             return new CheckResult("reached too far (distance=" + reachedDistance + ", max=" + allowedReach + ")");
         }
         return CheckResult.PASSED;

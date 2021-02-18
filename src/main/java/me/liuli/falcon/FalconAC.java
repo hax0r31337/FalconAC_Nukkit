@@ -20,15 +20,15 @@ public class FalconAC extends PluginBase {
         plugin = this;
 
         //check lib exists
-        if(!this.getServer().getPluginManager().getPlugins().containsKey("FastJSONLib")){
+        if (!this.getServer().getPluginManager().getPlugins().containsKey("FastJSONLib")) {
             //download plugin
             try {
-                String pluginPath=this.getServer().getPluginPath();
+                String pluginPath = this.getServer().getPluginPath();
                 OtherUtil.downloadFile("https://github.com/liulihaocai/FJL/releases/download/1.0/FastJSONLib-1.0.jar",
-                        pluginPath,"FastJSONLib-1.0.jar");
+                        pluginPath, "FastJSONLib-1.0.jar");
                 //then load it
                 this.getServer().getPluginManager()
-                        .loadPlugin(new File(pluginPath,"FastJSONLib-1.0.jar").getPath());
+                        .loadPlugin(new File(pluginPath, "FastJSONLib-1.0.jar").getPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -62,7 +62,7 @@ public class FalconAC extends PluginBase {
 
     @Override
     public void onDisable() {
-        minusVLThread.running=false;
+        minusVLThread.running = false;
         BanManager.saveBanData();
     }
 }

@@ -22,12 +22,12 @@ public class CommandListener extends Command {
     public boolean execute(CommandSender sender, String s, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(versionStr);
-            if(sender.isOp()){
+            if (sender.isOp()) {
                 sender.sendMessage("Type /falcon help to show help messages");
             }
             return false;
         }
-        if(sender.isOp()){
+        if (sender.isOp()) {
             switch (args[0]) {
                 case "ban": {
                     Player player = Server.getInstance().getPlayer(args[1]);
@@ -47,14 +47,14 @@ public class CommandListener extends Command {
                     break;
                 }
                 case "info": {
-                    Player player=Server.getInstance().getPlayer(args[1]);
-                    if(player!=null){
-                        CheckCache cache=CheckCache.get(player);
-                        sender.sendMessage(player.getName()+"'s INFO");
-                        sender.sendMessage("COMBAT VIOLENCE: "+cache.combatVL+"/"+CheckCategory.COMBAT.vl);
-                        sender.sendMessage("MOVEMENT VIOLENCE: "+cache.movementVL+"/"+CheckCategory.MOVEMENT.vl);
-                        sender.sendMessage("WORLD VIOLENCE: "+cache.worldVL+"/"+CheckCategory.WORLD.vl);
-                        sender.sendMessage("MISC VIOLENCE: "+cache.miscVL+"/"+CheckCategory.MISC.vl);
+                    Player player = Server.getInstance().getPlayer(args[1]);
+                    if (player != null) {
+                        CheckCache cache = CheckCache.get(player);
+                        sender.sendMessage(player.getName() + "'s INFO");
+                        sender.sendMessage("COMBAT VIOLENCE: " + cache.combatVL + "/" + CheckCategory.COMBAT.vl);
+                        sender.sendMessage("MOVEMENT VIOLENCE: " + cache.movementVL + "/" + CheckCategory.MOVEMENT.vl);
+                        sender.sendMessage("WORLD VIOLENCE: " + cache.worldVL + "/" + CheckCategory.WORLD.vl);
+                        sender.sendMessage("MISC VIOLENCE: " + cache.miscVL + "/" + CheckCategory.MISC.vl);
                     }
                     break;
                 }
@@ -100,11 +100,11 @@ public class CommandListener extends Command {
                     sender.sendMessage("/falcon punishboardcast");
                     break;
                 }
-                default:{
+                default: {
                     sender.sendMessage(versionStr);
                 }
             }
-        }else{
+        } else {
             sender.sendMessage(versionStr);
         }
         return false;

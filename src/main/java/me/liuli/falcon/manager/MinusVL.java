@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MinusVL implements Runnable {
-    public boolean running=true;
+    public boolean running = true;
 
     @Override
     public void run() {

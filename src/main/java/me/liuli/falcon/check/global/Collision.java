@@ -9,7 +9,7 @@ import cn.nukkit.math.Vector3;
 import java.util.ArrayList;
 
 public class Collision {
-    public static Block getCollisionBlock(AxisAlignedBB newBB, Location location){
+    public static Block getCollisionBlock(AxisAlignedBB newBB, Location location) {
         AxisAlignedBB bb2 = newBB.clone();
         bb2.expand(-0.2, -0.2, -0.2);
 

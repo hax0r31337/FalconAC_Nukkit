@@ -56,10 +56,6 @@ public class CheckCache {
         lastAnimate = timeNow;
     }
 
-    public boolean inTeleportAccount(){
-        return (System.currentTimeMillis() - teleportTime) < Configuration.accountForTeleports;
-    }
-
     public static CheckCache get(Player player) {
         return get(player.getUniqueId());
     }
@@ -74,5 +70,9 @@ public class CheckCache {
 
     public static void remove(UUID uuid) {
         checkCacheMap.remove(uuid);
+    }
+
+    public boolean inTeleportAccount() {
+        return (System.currentTimeMillis() - teleportTime) < Configuration.accountForTeleports;
     }
 }

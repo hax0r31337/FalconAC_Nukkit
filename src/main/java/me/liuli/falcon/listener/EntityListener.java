@@ -53,7 +53,7 @@ public class EntityListener implements Listener {
                 NoSwingCheck.check(player);
             }
             if (shouldFlag) {
-                if(Configuration.flag) {
+                if (Configuration.flag) {
                     event.setCancelled();
                 }
                 return;
@@ -64,11 +64,11 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityMotion(EntityMotionEvent event) {
-        if(event.getEntity() instanceof Player){
-            Player player= (Player) event.getEntity();
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
 
             CheckCache cache = CheckCache.get(player);
-            if(cache!=null){
+            if (cache != null) {
                 cache.movementCache.handleVelocity(event.getMotion());
             }
         }

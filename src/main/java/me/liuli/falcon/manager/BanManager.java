@@ -30,18 +30,18 @@ public class BanManager {
     }
 
     public static void removeBan(String banid) {
-        String upperId=banid.toUpperCase();
-        if(banJSON.containsKey(upperId)) {
+        String upperId = banid.toUpperCase();
+        if (banJSON.containsKey(upperId)) {
             banJSON.remove(upperId);
-            FalconAC.plugin.getLogger().warning("UNBAN BANID:"+upperId+" FROM BANID.");
-        }else{
-            UUID offlineUUID=Server.getInstance().getOfflinePlayer(banid).getUniqueId();
-            if(offlineUUID!=null){
-                String offlineBanId=banIdGen(offlineUUID);
+            FalconAC.plugin.getLogger().warning("UNBAN BANID:" + upperId + " FROM BANID.");
+        } else {
+            UUID offlineUUID = Server.getInstance().getOfflinePlayer(banid).getUniqueId();
+            if (offlineUUID != null) {
+                String offlineBanId = banIdGen(offlineUUID);
                 banJSON.remove(offlineBanId);
-                FalconAC.plugin.getLogger().warning("UNBAN BANID:"+offlineBanId+" FROM PLAYERNAME("+banid+").");
-            }else {
-                FalconAC.plugin.getLogger().warning("CANNOT FIND PLAYER WITH NAME "+banid+".");
+                FalconAC.plugin.getLogger().warning("UNBAN BANID:" + offlineBanId + " FROM PLAYERNAME(" + banid + ").");
+            } else {
+                FalconAC.plugin.getLogger().warning("CANNOT FIND PLAYER WITH NAME " + banid + ".");
             }
         }
         saveBanData();
@@ -61,7 +61,7 @@ public class BanManager {
                 } else {
                     time = OtherUtil.t2s(expire - OtherUtil.getTime());
                 }
-                AnticheatManager.kick(player,Configuration.LANG.BAN_REASON.proc(new String[]{time, banid}));
+                AnticheatManager.kick(player, Configuration.LANG.BAN_REASON.proc(new String[]{time, banid}));
             }
         }
     }

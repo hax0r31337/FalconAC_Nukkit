@@ -38,16 +38,16 @@ public class LocationUtil {
         Vector3 vector = new Vector3();
         double rotX = location.getYaw();
         double rotY = location.getPitch();
-        vector.y=-Math.sin(Math.toRadians(rotY));
+        vector.y = -Math.sin(Math.toRadians(rotY));
         double xz = Math.cos(Math.toRadians(rotY));
-        vector.x=-xz * Math.sin(Math.toRadians(rotX));
-        vector.z=xz * Math.cos(Math.toRadians(rotX));
+        vector.x = -xz * Math.sin(Math.toRadians(rotX));
+        vector.z = xz * Math.cos(Math.toRadians(rotX));
         return vector;
     }
 
     public static int floor(double num) {
-        int floor = (int)num;
-        return (double)floor == num ? floor : floor - (int)(Double.doubleToRawLongBits(num) >>> 63);
+        int floor = (int) num;
+        return (double) floor == num ? floor : floor - (int) (Double.doubleToRawLongBits(num) >>> 63);
     }
 
     public static double distanceSquared(final double x1, final double y1, final double z1, final double x2, final double y2, final double z2) {
