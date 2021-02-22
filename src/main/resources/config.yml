@@ -142,7 +142,7 @@ modules:
     # The amount of milliseconds to compensate for a teleport (50ms = 1 tick)
     teleportCompensation: 300
   noswing:
-    enable: true
+    enable: false
     vl: 10
     swing: 500 # Maximum delay of swing and attack(ms)
   badpackets:
