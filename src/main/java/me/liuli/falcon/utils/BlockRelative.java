@@ -1,4 +1,4 @@
-package me.liuli.falcon.other;
+package me.liuli.falcon.utils;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Position;

@@ -1,7 +1,0 @@
-ALERT_PREFIX: "&6&lFalcon&bAC &8> &7"
-WARNING: "You have been flagged for using cheats.If you continue to cheat, action will be taken."
-DEBUG: "&6&lFalcon&bAC&f[&cDEBUG&f] %1 &7failed &b%2 &fvl:%3/%4 &7%5"
-KICK: "%1 was kicked for cheating"
-BAN: "%1 was banned for cheating"
-KICK_REASON: "&cKicked for unfair advantage\n&6&lFalcon&bAC"
-BAN_REASON: "&cBanned %1 for unfair advantage\n&fBANID:%2\n&6&lFalcon&bAC"

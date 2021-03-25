@@ -99,7 +99,7 @@ public class OtherUtil {
     }
 
     public static void downloadFile(String urlStr, String filePath, String fileName) throws IOException {
-        FalconAC.plugin.getLogger().info("DOWNLOADING " + fileName + " FROM URL: " + urlStr);
+        System.out.println("DOWNLOADING " + fileName + " FROM URL: " + urlStr);
 
         long startTime = System.currentTimeMillis();
         File jar = new File(filePath, fileName);
@@ -121,7 +121,7 @@ public class OtherUtil {
             nowSize += size;
             int progcess = 100 * nowSize / totalSize;
             if (progcess % 5 == 0 && progcess != lastSize) {
-                FalconAC.plugin.getLogger().info("DOWNLOADING " + fileName + " PROCESS:" + (100 * nowSize / totalSize) + "%");
+                System.out.println("DOWNLOADING " + fileName + " PROCESS:" + (100 * nowSize / totalSize) + "%");
                 lastSize = progcess;
             }
         }
@@ -131,6 +131,6 @@ public class OtherUtil {
         if (jar.exists())
             jar.delete();
         tmp.renameTo(jar);
-        FalconAC.plugin.getLogger().info("DOWNLOAD " + fileName + " COMPLETE(" + ((System.currentTimeMillis() - startTime) / 1000) + "s)");
+        System.out.println("DOWNLOAD " + fileName + " COMPLETE(" + ((System.currentTimeMillis() - startTime) / 1000) + "s)");
     }
 }

@@ -1,30 +1,39 @@
 package me.liuli.falcon;
 
+import cn.nukkit.permission.Permission;
 import cn.nukkit.plugin.PluginBase;
-import me.liuli.falcon.cache.Configuration;
-import me.liuli.falcon.listener.*;
-import me.liuli.falcon.manager.BanManager;
-import me.liuli.falcon.manager.MinusVL;
+import cn.nukkit.plugin.PluginLogger;
+import lombok.Getter;
+import me.liuli.falcon.listener.PacketListener;
+import me.liuli.falcon.manage.CheckManager;
+import me.liuli.falcon.other.UpdateTask;
 import me.liuli.falcon.utils.OtherUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class FalconAC extends PluginBase {
-    public static FalconAC plugin;
-    public static int CONFIG_VERSION = 4;
-    private static MinusVL minusVLThread;
+    @Getter
+    private static FalconAC instance;
+
+    @Getter
+    private static CheckManager checkManager;
+    @Getter
+    private static ThreadPoolExecutor threadPoolExecutor;
 
     @Override
     public void onEnable() {
-        plugin = this;
+        instance = this;
 
         //check lib exists
         if (!this.getServer().getPluginManager().getPlugins().containsKey("FastJSONLib")) {
             //download plugin
             try {
                 String pluginPath = this.getServer().getPluginPath();
-                OtherUtil.downloadFile("https://github.com/liulihaocai/FJL/releases/download/1.0/FastJSONLib-1.0.jar",
+                OtherUtil.downloadFile("https://hub.fastgit.org/liulihaocai/FJL/releases/download/1.0/FastJSONLib-1.0.jar",
                         pluginPath, "FastJSONLib-1.0.jar");
                 //then load it
                 this.getServer().getPluginManager()
@@ -34,35 +43,37 @@ public class FalconAC extends PluginBase {
             }
         }
 
-        if (!new File(FalconAC.plugin.getDataFolder().getPath() + "/data").exists()) {
-            new File(FalconAC.plugin.getDataFolder().getPath() + "/data").mkdirs();
+        if (!new File(this.getDataFolder().getPath() + "/data").exists()) {
+            new File(this.getDataFolder().getPath() + "/data").mkdirs();
         }
 
-        //load config
-        Configuration.loadConfig();
-        BanManager.loadBanData();
+        //load things
+        threadPoolExecutor=new ThreadPoolExecutor(
+                Runtime.getRuntime().availableProcessors(),
+                Integer.MAX_VALUE,
+                60,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        checkManager=new CheckManager();
+        checkManager.registerAll();
 
-        //start threads
-        minusVLThread = new MinusVL();
-        new Thread(minusVLThread).start();
+        //add perm
+        this.getServer().getPluginManager().addPermission(new Permission("falcon.check","Falcon cheat detection",Permission.DEFAULT_TRUE));
+        this.getServer().getPluginManager().addPermission(new Permission("falcon.command","Use /falcon command",Permission.DEFAULT_OP));
 
-        //register listeners
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(), this);
-        getServer().getPluginManager().registerEvents(new PacketListener(), this);
-
-        //register command
-        plugin.getServer().getCommandMap().register("falcon", new CommandListener(plugin.getDescription().getVersion()));
+        //reg events
+        this.getServer().getScheduler().scheduleRepeatingTask(new UpdateTask(checkManager),1,false);
+        this.getServer().getPluginManager().registerEvents(new PacketListener(checkManager,threadPoolExecutor),this);
 
         //done
-        plugin.getLogger().info("§l§6Falcon§bAC §rLOADED!");
-        plugin.getLogger().info("This is an open-source project:https://github.com/liulihaocai/FalconAC");
+        this.getLogger().info("§l§6Falcon§bAC §rENABLED!");
+        this.getLogger().info("This is an open-source project:https://github.com/liulihaocai/FalconAC");
     }
 
     @Override
     public void onDisable() {
-        minusVLThread.running = false;
-        BanManager.saveBanData();
+        threadPoolExecutor.shutdown();
+        this.getLogger().info("§l§6Falcon§bAC §rDISABLED!");
     }
 }
