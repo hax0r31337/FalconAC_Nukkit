@@ -5,8 +5,24 @@
 #   Feel free to read through the descriptions of checks and options and change them to suit your server.
 #   I hope that FalconAC will perform well and live up to your expectations.
 #      - Liulihaocai
+#
+# 开始使用:
+#  VL的意思是Violence Level，这个值决定了反作弊检测玩家的策略(例如kick，严格模式等)
+
+# threadhold:
+#  玩家对于vl增长反作弊的处理
+# 消placeholder:
+#  %r 玩家这次vl增长的原因
+#  %p 玩家id
+#  %vl 玩家vl
+threadhold:
+  always: [{type: "con-msg",message: "%p failed %r VL:%vl"}]
+  100: [{type: "pri-msg",message: "#STOPHACKING# You got flagged for %r"}]
+  300: [{type: "kick",message: "Illegal Client Modification\nReason: %r"}
+        {type: "broadcast",message: "%p got kicked,reason: Hack"}]
 
 checks:
   killaura:
     hit:
+      onlyStrict: false
       range: 3.5
