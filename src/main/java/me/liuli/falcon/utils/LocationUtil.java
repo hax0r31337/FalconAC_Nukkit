@@ -8,6 +8,12 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.math.Vector3f;
 
 public class LocationUtil {
+    public static double calculateYawDifference(Location from, Location to) {
+        Location clonedFrom = from.clone();
+        Vector3f vector = new Vector3f((float) (to.x - clonedFrom.x), (float) (to.y - clonedFrom.y), (float) (to.z - clonedFrom.z));
+        return LocationUtil.setDirection(vector, clonedFrom).getYaw();
+    }
+
     public static Location setDirection(Vector3f vector, Location location) {
         double x = vector.getX();
         double z = vector.getZ();

@@ -2,6 +2,8 @@ package me.liuli.falcon
 
 import cn.nukkit.permission.Permission
 import cn.nukkit.plugin.PluginBase
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import me.liuli.falcon.data.ACConfig
 import me.liuli.falcon.listener.PacketListener
 import me.liuli.falcon.listener.PlayerListener
@@ -19,6 +21,10 @@ class FalconAC : PluginBase() {
         lateinit var INSTANCE: FalconAC
     }
 
+    init {
+        INSTANCE=this
+    }
+
     val threadPoolExecutor = ThreadPoolExecutor(
         Runtime.getRuntime().availableProcessors(), Int.MAX_VALUE,
         60,
@@ -27,17 +33,22 @@ class FalconAC : PluginBase() {
         CallerRunsPolicy()
     )
 
-    val checkManager = CheckManager()
-    val playerManager = PlayerManager()
-    val config = ACConfig()
+    lateinit var checkManager: CheckManager
+    lateinit var playerManager: PlayerManager
+    lateinit var config: ACConfig
+
+    val gson = Gson()
+    val jsonParser = JsonParser()
 
     override fun onEnable() {
-        INSTANCE=this
-
         val folder = this.dataFolder
         if (!folder.exists()) {
             folder.mkdirs()
         }
+
+        config=ACConfig()
+        checkManager=CheckManager()
+        playerManager= PlayerManager()
 
         //init
         checkManager.registerAll()
@@ -48,7 +59,7 @@ class FalconAC : PluginBase() {
 
         //reg events
         this.server.scheduler.scheduleRepeatingTask(UpdateTask(checkManager), 1, false)
-        this.server.pluginManager.registerEvents(PacketListener(checkManager, threadPoolExecutor), this)
+        this.server.pluginManager.registerEvents(PacketListener(), this)
         this.server.pluginManager.registerEvents(PlayerListener(), this)
 
         this.logger.info("§l§6Falcon§bAC §rENABLED!");

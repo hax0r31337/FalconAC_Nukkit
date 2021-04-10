@@ -19,7 +19,7 @@ public class OtherUtil {
         return new GsonBuilder().create().toJson(section);
     }
 
-    public static void writeFile(String path, String text) {
+    public static void writeFile(File path, String text) {
         try {
             Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8));
             writer.write(text);

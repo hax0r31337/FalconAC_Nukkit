@@ -9,20 +9,28 @@
 # 开始使用:
 #  VL的意思是Violence Level，这个值决定了反作弊检测玩家的策略(例如kick，严格模式等)
 
-# threadhold:
-#  玩家对于vl增长反作弊的处理
-# 消placeholder:
-#  %r 玩家这次vl增长的原因
-#  %p 玩家id
-#  %vl 玩家vl
-threadhold:
-  always: [{type: "con-msg",message: "%p failed %r VL:%vl"}]
-  100: [{type: "pri-msg",message: "#STOPHACKING# You got flagged for %r"}]
-  300: [{type: "kick",message: "Illegal Client Modification\nReason: %r"}
-        {type: "broadcast",message: "%p got kicked,reason: Hack"}]
+brand: "&6Falcon&bAC"
+
+badpackets:
+  # 如果玩家发送了有严重问题的数据包，这个玩家将会直接被踢
+  # 当这个值是false时，损坏的数据包将被忽略
+  instant-kick: true
+  # 损坏的战斗包 - 未知实体id
+  # 这个选项可能和其他反作弊中的假人冲突
+  attack-id: true
+  # 尝试攻击自己(自伤disabler?)
+  attack-self: true
+  # 损坏的快捷栏切换包
+  slot: true
+  # 在空中发送跳跃Action包(AirJump)
+  air-jump: true
+  # 不正常的pitch(derp?)
+  illegal-pitch: true
 
 checks:
-  killaura:
+  fight:
     hit:
+      baseVL: 20
       onlyStrict: false
       range: 3.5
+      angleDiff: 60
