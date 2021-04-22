@@ -9,7 +9,7 @@
 # 开始使用:
 #  VL的意思是Violence Level，这个值决定了反作弊检测玩家的策略(例如kick，严格模式等)
 
-brand: "&6Falcon&bAC"
+brand: "&6M&belhor"
 
 badpackets:
   # 如果玩家发送了有严重问题的数据包，这个玩家将会直接被踢

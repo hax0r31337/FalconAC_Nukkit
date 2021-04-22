@@ -1,6 +1,6 @@
 
-name: FalconAC
-main: me.liuli.falcon.FalconAC
+name: Melhor
+main: me.liuli.melhor.Melhor
 version: "2.0-Beta1"
 author: liulihaocai
 api: ["1.0.0"]

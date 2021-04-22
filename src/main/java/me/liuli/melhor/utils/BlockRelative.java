@@ -1,9 +1,8 @@
-package me.liuli.falcon.utils;
+package me.liuli.melhor.utils;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
-import me.liuli.falcon.FalconAC;
 
 public enum BlockRelative {
     NORTH(0, 0, -1),
@@ -30,13 +29,13 @@ public enum BlockRelative {
     private final int modY;
     private final int modZ;
 
-    private BlockRelative(int modX, int modY, int modZ) {
+    BlockRelative(int modX, int modY, int modZ) {
         this.modX = modX;
         this.modY = modY;
         this.modZ = modZ;
     }
 
-    private BlockRelative(BlockRelative face1, BlockRelative face2) {
+    BlockRelative(BlockRelative face1, BlockRelative face2) {
         this.modX = face1.getModX() + face2.getModX();
         this.modY = face1.getModY() + face2.getModY();
         this.modZ = face1.getModZ() + face2.getModZ();

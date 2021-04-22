@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.liuli.falcon</groupId>
-    <artifactId>FalconAC</artifactId>
+    <groupId>me.liuli.melhor</groupId>
+    <artifactId>Melhor</artifactId>
     <version>2.0-Beta1</version>
     <properties>
         <java.version>8</java.version>

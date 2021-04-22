@@ -1,10 +1,10 @@
-package me.liuli.falcon.utils;
+package me.liuli.melhor.utils;
 
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import com.google.gson.GsonBuilder;
-import me.liuli.falcon.FalconAC;
+import me.liuli.melhor.Melhor;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -84,7 +84,7 @@ public class OtherUtil {
     }
 
     public static String getTextFromResource(String resourceName) {
-        InputStream inputStream = FalconAC.class.getClassLoader().getResourceAsStream(resourceName);
+        InputStream inputStream = Melhor.class.getClassLoader().getResourceAsStream(resourceName);
         try {
             return getTextFromInputStream(inputStream);
         } catch (Exception e) {

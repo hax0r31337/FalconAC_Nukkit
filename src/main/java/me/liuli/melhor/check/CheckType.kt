@@ -1,4 +1,4 @@
-package me.liuli.falcon.check
+package me.liuli.melhor.check
 
 enum class CheckType(val configKey: String) {
     Fight("fight"),
